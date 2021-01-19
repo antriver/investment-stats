@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@": [
+                "src"
+            ]
+        },
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "jsx": "react",
+        "module": "commonjs",
+        "target": "es6",
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "outDir": "./dist/",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "incremental": true,
+        "sourceMap": true,
+        "strictNullChecks": false,
+        "strictPropertyInitialization": false,
+        "tsBuildInfoFile": ".tsbuildinfo",
+        "lib": [
+            "es2017",
+            "es2019",
+            "DOM",
+            "ES6",
+            "DOM.Iterable",
+            "ScriptHost",
+            "es2018.promise"
+        ]
+    }
+}
