@@ -72,6 +72,11 @@ class BinanceApi extends API
         return $this->httpRequest("v1/launchpool/positions", "GET", ['sapi' => true], true);
     }
 
+    public function rawPrices()
+    {
+        return $this->httpRequest("v3/ticker/price");
+    }
+
     public function getBalancesWithValues(array $fiats): array
     {
         $ticker = $this->prices();

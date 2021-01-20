@@ -32,7 +32,7 @@ export default Vue.extend({
 .asset-card {
     background: rgb(255, 255, 255);
     border-radius: 10px;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .05);
+    box-shadow: rgba(0, 0, 0, 0.075) 0 2px 4px 0;
     padding: 10px;
     display: flex;
     align-items: center;
