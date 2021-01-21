@@ -3,7 +3,8 @@ export interface SnapshotAsset {
     snapshotId: number;
     service: string;
     asset: string;
-    assetName?: string;
+    name?: string;
+    logoUrl?: string;
     amount: string;
     gbpValue: number;
     gbpProfit: number;

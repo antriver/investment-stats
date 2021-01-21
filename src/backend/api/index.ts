@@ -14,7 +14,7 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
         const assets = await assetRepository.getCurrentAssets();
 
         // Return them indexed by asset.
-        let results: {[key: string]: OwnedAsset} = {};
+        const results: {[key: string]: OwnedAsset} = {};
 
         assets.forEach((asset) => {
             results[asset.asset] = asset;
@@ -29,7 +29,7 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
 
         const response = {
             snapshot,
-            assets
+            assets,
         };
 
         res.json(response);
@@ -41,7 +41,7 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
 
         const response = {
             snapshot,
-            assets
+            assets,
         };
 
         res.json(response);

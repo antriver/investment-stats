@@ -1,5 +1,9 @@
 <template>
     <div class="asset-card">
+        <img v-if="asset.logoUrl"
+             :src="asset.logoUrl"
+             class="asset-card__logo" />
+
         <div class="asset-card__name">
             {{ asset.name }}
             <small>
@@ -57,6 +61,13 @@ export default Vue.extend({
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &__logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
 
     &__name {
         flex-grow: 1;
