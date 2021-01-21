@@ -22,7 +22,7 @@
                         {{ latestSnapshot.createdAt | relativeTime }}
                     </h4>
 
-                    <div class="btn-group">
+                    <div class="btn-group no-shrink">
                         <button type="button"
                                 class="btn btn-default"
                                 :class="{'active':profitDisplay === 'percent'}"
