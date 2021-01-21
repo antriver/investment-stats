@@ -26,7 +26,15 @@ export const saveStocksSnapshot = async (snapshotId: number, sequelize: Sequeliz
     console.log('GBP <- USD:', inverseForexRates.USD);
 
     for (let i = 0; i < assets.length; i++) {
-        const price = await ysp.getCurrentData(assets[i].asset);
+        console.log(`Getting price for ${assets[i].asset}`);
+        let price;
+        try {
+            price = await ysp.getCurrentData(assets[i].asset);
+        } catch (e) {
+            console.log(`Getting price for ${assets[i].asset} failed.`, e);
+            continue;
+        }
+
         console.log(assets[i].asset, price);
 
         let currentPrice = new BigNumber(price.price);
