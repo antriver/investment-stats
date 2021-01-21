@@ -1,7 +1,7 @@
 import { Express } from 'express';
 import { Sequelize } from 'sequelize';
-import { AssetRepository } from './classes/AssetRepository';
-import { SnapshotRepository } from './classes/SnapshotRepository';
+import { AssetRepository } from '../classes/AssetRepository';
+import { SnapshotRepository } from '../classes/SnapshotRepository';
 
 export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> => {
     console.log('Initializing API...');

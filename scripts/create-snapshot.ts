@@ -1,9 +1,9 @@
 import { initializeDb } from '../src/backend/database';
 import { saveStocksSnapshot } from '../src/backend/snapshots/stocks';
 import { saveBinanceSnapshot } from '../src/backend/snapshots/binance';
-import { CoinMarketCap } from '../src/backend/functions/CoinMarketCap';
-import { AssetRepository } from '../src/backend/api/classes/AssetRepository';
-import { AssetInterface } from '../src/backend/api/models/AssetInterface';
+import { CoinMarketCap } from '../src/backend/classes/CoinMarketCap';
+import { AssetRepository } from '../src/backend/classes/AssetRepository';
+import { AssetInterface } from '../src/backend/models/AssetInterface';
 
 require('dotenv').config();
 

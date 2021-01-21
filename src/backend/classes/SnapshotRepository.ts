@@ -1,5 +1,4 @@
 import { QueryTypes, Sequelize } from 'sequelize';
-import { OwnedAsset } from '../models/OwnedAsset';
 import { Snapshot } from '../models/Snapshot';
 import { SnapshotAsset } from '../models/SnapshotAsset';
 

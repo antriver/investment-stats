@@ -1,4 +1,4 @@
-import { Asset } from '../api/models/AssetInterface';
+import { Asset } from '../models/AssetInterface';
 
 const CoinMarketCapClient = require('coinmarketcap-api');
 

@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { AssetRepository } from '../api/classes/AssetRepository';
+import { AssetRepository } from '../classes/AssetRepository';
 import { getRates, invertRates } from '../functions/forex';
 import BigNumber from 'bignumber.js';
 
