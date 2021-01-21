@@ -11,7 +11,7 @@ export default Vue.extend({
     name: 'Difference',
     props: {
         value: {
-            type: Number,
+            type: [Number, String],
             required: true,
         },
         asCurrency: {

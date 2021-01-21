@@ -69,7 +69,7 @@ __webpack_require__.r(__webpack_exports__);
   name: 'Difference',
   props: {
     value: {
-      type: Number,
+      type: [Number, String],
       required: true
     },
     asCurrency: {
@@ -149,6 +149,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 
 
 
@@ -159,6 +162,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   data: function data() {
     return {
+      /**
+       * @type {Object<string, OwnedAsset>}
+       */
+      ownedAssets: {},
+
       /**
        * @type {Snapshot}
        */
@@ -189,41 +197,40 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var latestSnapshotResponse, assets, availableSnapshotsResponse;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/snapshots/latest');
-
-            case 2:
-              latestSnapshotResponse = _context.sent;
-              _this.latestSnapshot = latestSnapshotResponse.data.snapshot;
-              assets = latestSnapshotResponse.data.assets;
-              assets.forEach(function (a) {
-                a.gbpProfitFloat = parseFloat(a.gbpProfit || 0);
+              axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/assets').then(function (_ref) {
+                var data = _ref.data;
+                _this.ownedAssets = data;
               });
-              assets.sort(function (a, b) {
-                if (a.gbpProfitFloat < b.gbpProfitFloat) {
-                  return 1;
-                }
+              axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/snapshots/latest').then(function (_ref2) {
+                var data = _ref2.data;
+                _this.latestSnapshot = data.snapshot;
+                var assets = data.assets;
+                assets.forEach(function (a) {
+                  a.gbpProfitFloat = parseFloat(a.gbpProfit || 0);
+                });
+                assets.sort(function (a, b) {
+                  if (a.gbpProfitFloat < b.gbpProfitFloat) {
+                    return 1;
+                  }
 
-                if (a.gbpProfitFloat > b.gbpProfitFloat) {
-                  return -1;
-                }
+                  if (a.gbpProfitFloat > b.gbpProfitFloat) {
+                    return -1;
+                  }
 
-                return 0;
+                  return 0;
+                });
+                _this.latestSnapshotAssets = assets;
               });
-              _this.latestSnapshotAssets = assets;
-              _context.next = 10;
-              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/snapshots');
+              axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/snapshots').then(function (_ref3) {
+                var data = _ref3.data;
+                _this.availableSnapshots = data;
+              });
 
-            case 10:
-              availableSnapshotsResponse = _context.sent;
-              _this.availableSnapshots = availableSnapshotsResponse.data;
-
-            case 12:
+            case 3:
             case "end":
               return _context.stop();
           }
@@ -232,10 +239,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }))();
   },
   computed: {
-    compareAssets: function compareAssets() {
+    comparedAssets: function comparedAssets() {
       var _this2 = this;
 
+      console.log('comparedAssets');
       /** @type {SnapshotAsset[]} */
+
       var currentAssets = Object(lodash__WEBPACK_IMPORTED_MODULE_2__["cloneDeep"])(this.latestSnapshotAssets);
 
       var findOldAsset = function findOldAsset(asset) {
@@ -254,11 +263,35 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         asset.amountChange = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(asset.amount).minus(oldAsset.amount).decimalPlaces(4, bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a.ROUND_HALF_UP).toNumber();
         return asset;
       });
+    },
+    latestSnapshotAssetsWithProfit: function latestSnapshotAssetsWithProfit() {
+      var _this3 = this;
+
+      console.log('latestSnapshotAssetsWithProfit');
+      /** @type {SnapshotAsset[]} */
+
+      var currentAssets = Object(lodash__WEBPACK_IMPORTED_MODULE_2__["cloneDeep"])(this.latestSnapshotAssets);
+      currentAssets.forEach(function (a) {
+        // Clear profit returned by API as this is going to be removed.
+        a.gbpProfit = null;
+        /**
+         * @type {OwnedAsset}
+         */
+
+        var oa = _this3.ownedAssets[a.asset];
+
+        if (!oa) {
+          return;
+        }
+
+        a.gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(a.gbpValue).minus(oa.totalGbpPaid).decimalPlaces(2).toNumber();
+      });
+      return currentAssets;
     }
   },
   methods: {
     setCompareToSnapshot: function setCompareToSnapshot(snapshot) {
-      var _this3 = this;
+      var _this4 = this;
 
       if (!snapshot) {
         this.compareToSnapshot = null;
@@ -267,10 +300,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       this.compareToSnapshot = snapshot;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/snapshots/".concat(snapshot.id)).then(function (_ref) {
-        var data = _ref.data;
-        _this3.compareToSnapshot = data.snapshot;
-        _this3.compareToSnapshotAssets = data.assets;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/snapshots/".concat(snapshot.id)).then(function (_ref4) {
+        var data = _ref4.data;
+        _this4.compareToSnapshot = data.snapshot;
+        _this4.compareToSnapshotAssets = data.assets;
       });
     }
   }
@@ -430,13 +463,15 @@ var render = function() {
             ? [
                 _c("p", { staticClass: "text-center" }, [
                   _vm._v(
-                    _vm._s(
-                      _vm._f("relativeTime")(_vm.latestSnapshot.createdAt)
-                    ) +
-                      " compared to " +
+                    "\n                    " +
+                      _vm._s(
+                        _vm._f("relativeTime")(_vm.latestSnapshot.createdAt)
+                      ) +
+                      "\n                    compared to\n                    " +
                       _vm._s(
                         _vm._f("relativeTime")(_vm.compareToSnapshot.createdAt)
-                      )
+                      ) +
+                      "\n                "
                   )
                 ]),
                 _vm._v(" "),
@@ -444,7 +479,7 @@ var render = function() {
                   ? _c(
                       "div",
                       { staticClass: "asset-grid" },
-                      _vm._l(_vm.compareAssets, function(asset) {
+                      _vm._l(_vm.comparedAssets, function(asset) {
                         return _c("AssetCard", {
                           key: asset.id,
                           attrs: { asset: asset }
@@ -465,7 +500,7 @@ var render = function() {
                 _c(
                   "div",
                   { staticClass: "asset-grid" },
-                  _vm._l(_vm.latestSnapshotAssets, function(asset) {
+                  _vm._l(_vm.latestSnapshotAssetsWithProfit, function(asset) {
                     return _c("AssetCard", {
                       key: asset.id,
                       attrs: { asset: asset }

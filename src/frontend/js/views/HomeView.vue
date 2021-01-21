@@ -3,11 +3,14 @@
         <div class="left">
             <div class="assets container">
                 <template v-if="compareToSnapshot">
-                    <p class="text-center">{{ latestSnapshot.createdAt | relativeTime }} compared to {{
-                        compareToSnapshot.createdAt | relativeTime }}</p>
+                    <p class="text-center">
+                        {{ latestSnapshot.createdAt | relativeTime }}
+                        compared to
+                        {{ compareToSnapshot.createdAt | relativeTime }}
+                    </p>
                     <div v-if="compareToSnapshotAssets"
                          class="asset-grid">
-                        <AssetCard v-for="asset in compareAssets"
+                        <AssetCard v-for="asset in comparedAssets"
                                    :key="asset.id"
                                    :asset="asset" />
                     </div>
@@ -16,7 +19,7 @@
                           class="asset-grid">
                     <p class="text-center">{{ latestSnapshot.createdAt | relativeTime }}</p>
                     <div class="asset-grid">
-                        <AssetCard v-for="asset in latestSnapshotAssets"
+                        <AssetCard v-for="asset in latestSnapshotAssetsWithProfit"
                                    :key="asset.id"
                                    :asset="asset" />
                     </div>
@@ -60,6 +63,11 @@ export default {
     data() {
         return {
             /**
+             * @type {Object<string, OwnedAsset>}
+             */
+            ownedAssets: {},
+
+            /**
              * @type {Snapshot}
              */
             latestSnapshot: null,
@@ -87,30 +95,41 @@ export default {
     },
 
     async created() {
-        const latestSnapshotResponse = await axios.get('/api/snapshots/latest');
-        this.latestSnapshot = latestSnapshotResponse.data.snapshot;
+        axios.get('/api/assets')
+            .then(({ data }) => {
+                this.ownedAssets = data;
+            });
 
-        const { assets } = latestSnapshotResponse.data;
-        assets.forEach((a) => {
-            a.gbpProfitFloat = parseFloat(a.gbpProfit || 0);
-        });
-        assets.sort((a, b) => {
-            if (a.gbpProfitFloat < b.gbpProfitFloat) {
-                return 1;
-            }
-            if (a.gbpProfitFloat > b.gbpProfitFloat) {
-                return -1;
-            }
-            return 0;
-        });
-        this.latestSnapshotAssets = assets;
+        axios.get('/api/snapshots/latest')
+            .then(({ data }) => {
+                this.latestSnapshot = data.snapshot;
 
-        const availableSnapshotsResponse = await axios.get('/api/snapshots');
-        this.availableSnapshots = availableSnapshotsResponse.data;
+                const { assets } = data;
+                assets.forEach((a) => {
+                    a.gbpProfitFloat = parseFloat(a.gbpProfit || 0);
+                });
+                assets.sort((a, b) => {
+                    if (a.gbpProfitFloat < b.gbpProfitFloat) {
+                        return 1;
+                    }
+                    if (a.gbpProfitFloat > b.gbpProfitFloat) {
+                        return -1;
+                    }
+                    return 0;
+                });
+                this.latestSnapshotAssets = assets;
+            });
+
+        axios.get('/api/snapshots')
+            .then(({ data }) => {
+                this.availableSnapshots = data;
+            });
     },
 
     computed: {
-        compareAssets() {
+        comparedAssets() {
+            console.log('comparedAssets');
+
             /** @type {SnapshotAsset[]} */
             const currentAssets = cloneDeep(this.latestSnapshotAssets);
 
@@ -137,6 +156,33 @@ export default {
 
                     return asset;
                 });
+        },
+
+        latestSnapshotAssetsWithProfit() {
+            console.log('latestSnapshotAssetsWithProfit');
+
+            /** @type {SnapshotAsset[]} */
+            const currentAssets = cloneDeep(this.latestSnapshotAssets);
+
+            currentAssets.forEach((a) => {
+                // Clear profit returned by API as this is going to be removed.
+                a.gbpProfit = null;
+
+                /**
+                 * @type {OwnedAsset}
+                 */
+                const oa = this.ownedAssets[a.asset];
+                if (!oa) {
+                    return;
+                }
+
+                a.gbpProfit = (new BigNumber(a.gbpValue))
+                    .minus(oa.totalGbpPaid)
+                    .decimalPlaces(2)
+                    .toNumber();
+            });
+
+            return currentAssets;
         },
     },
 

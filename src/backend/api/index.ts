@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { Sequelize } from 'sequelize';
 import { AssetRepository } from '../classes/AssetRepository';
 import { SnapshotRepository } from '../classes/SnapshotRepository';
+import { OwnedAsset } from '../models/OwnedAsset';
 
 export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> => {
     console.log('Initializing API...');
@@ -11,7 +12,15 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
 
     expressApp.get('/api/assets', async (req, res) => {
         const assets = await assetRepository.getCurrentAssets();
-        res.json(assets);
+
+        // Return them indexed by asset.
+        let results: {[key: string]: OwnedAsset} = {};
+
+        assets.forEach((asset) => {
+            results[asset.asset] = asset;
+        });
+
+        res.json(results);
     });
 
     expressApp.get('/api/snapshots/latest', async (req, res) => {
