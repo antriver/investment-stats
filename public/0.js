@@ -300,7 +300,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }).map(function (asset) {
         var oldAsset = findOldAsset(asset.asset); // Recalculate values based on the old asset.
 
-        asset.gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(asset.gbpValue).minus(oldAsset.gbpValue).decimalPlaces(2).toNumber();
+        var gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(asset.gbpValue).minus(oldAsset.gbpValue);
+        asset.gbpProfit = gbpProfit.decimalPlaces(2).toNumber(); // Calculate percentage profit.
+
+        asset.percentageProfit = gbpProfit.dividedBy(oldAsset.gbpValue).multipliedBy(100).decimalPlaces(2).toNumber();
         asset.amountChange = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(asset.amount).minus(oldAsset.amount).decimalPlaces(4, bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a.ROUND_HALF_UP).toNumber();
         return asset;
       });

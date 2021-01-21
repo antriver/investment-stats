@@ -169,8 +169,16 @@ export default {
                     const oldAsset = findOldAsset(asset.asset);
 
                     // Recalculate values based on the old asset.
-                    asset.gbpProfit = (new BigNumber(asset.gbpValue))
-                        .minus(oldAsset.gbpValue)
+                    const gbpProfit = (new BigNumber(asset.gbpValue))
+                        .minus(oldAsset.gbpValue);
+
+                    asset.gbpProfit = gbpProfit
+                        .decimalPlaces(2)
+                        .toNumber();
+
+                    // Calculate percentage profit.
+                    asset.percentageProfit = gbpProfit.dividedBy(oldAsset.gbpValue)
+                        .multipliedBy(100)
                         .decimalPlaces(2)
                         .toNumber();
 
