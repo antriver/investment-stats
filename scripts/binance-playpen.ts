@@ -1,22 +1,14 @@
 import Binance from 'binance-api-node';
 
-// const Binance = require('node-binance-api');
-
 import fs from 'fs';
 
-const binanceCreds = JSON.parse(fs.readFileSync(__dirname + '/../binance-credentials.json').toString());
-
-// const binance = new Binance().options({
-//    APIKEY: binanceCreds['api-key'],
-//    APISECRET: binanceCreds['api-secret']
-// });
+const binanceCreds = JSON.parse(fs.readFileSync(__dirname + '/../binance-credentials.json')
+    .toString());
 
 const binance = Binance({
     apiKey: binanceCreds['api-key'],
     apiSecret: binanceCreds['api-secret'],
 });
-
-// const augmentBalances = (balances, )
 
 const run = async () => {
     // const accountInfo = await binance.accountInfo();
@@ -37,6 +29,9 @@ const run = async () => {
 
     // const assets = await binance.assetDetail();
     // console.log(JSON.stringify(assets, null, 4));
+
+    const assets = await binance.assetDetail();
+    console.log(JSON.stringify(assets, null, 4));
 };
 
 run();
