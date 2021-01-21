@@ -113,3 +113,46 @@ export const addFiatValueToBalance = (balance: BalanceWithValues, fiat: string, 
         total: convertValue(tickers, 'BTC', fiat, new BigNumber(balance.values.BTC.total)).decimalPlaces(8).toString(),
     };
 };
+
+export const mergeBalances = (balances: Balance[]) => {
+    return balances.filter((balance) => {
+        let mergeWithSymbol: string;
+
+        // Lending balances:
+        const ldMatches = balance.asset.match(/^LD([A-Z]{3,})/);
+        if (ldMatches) {
+            // Strip the LD off the start and merge with non-lending.
+            mergeWithSymbol = ldMatches[1];
+        }
+
+        // BETH -> ETH
+        if (balance.asset === 'BETH') {
+            mergeWithSymbol = 'ETH';
+        }
+
+        if (!mergeWithSymbol) {
+            return true;
+        }
+
+        const mergeWithBalance = balances.find((b) => b.asset === mergeWithSymbol);
+
+        // If there is no balance for the merge symbol just add it back with that name.
+        if (mergeWithBalance) {
+            console.log(`Merging ${balance.asset} with ${mergeWithBalance.asset}`);
+
+            mergeWithBalance.free = (new BigNumber(mergeWithBalance.free)).plus(balance.free)
+                .decimalPlaces(8)
+                .toString();
+            mergeWithBalance.locked = (new BigNumber(mergeWithBalance.locked)).plus(balance.locked)
+                .decimalPlaces(8)
+                .toString();
+
+            // Remove original balance.
+            return false;
+        }
+
+        console.log(`Renaming ${balance.asset} to ${mergeWithSymbol}`);
+        balance.asset = mergeWithSymbol;
+        return true;
+    });
+};

@@ -1,21 +1,22 @@
 import Binance from 'binance-api-node';
 import { Sequelize } from 'sequelize';
-import fs from 'fs';
 import {
     addBtcPricesToBalances,
     addFiatValueToBalance,
-    flattenTickers,
+    flattenTickers, mergeBalances,
     zeroBalanceFilter,
 } from '../../functions/binance';
 
-const binanceCreds = JSON.parse(fs.readFileSync(__dirname + '/../../../binance-credentials.json').toString());
-
-const binance = Binance({
-    apiKey: binanceCreds['api-key'],
-    apiSecret: binanceCreds['api-secret'],
-});
+const createBinance = () => {
+    return Binance({
+        apiKey: process.env.BINANCE_KEY,
+        apiSecret: process.env.BINANCE_SECRET,
+    });
+};
 
 export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequelize) => {
+    const binance = createBinance();
+
     const accountInfo = await binance.accountInfo();
     // console.log(JSON.stringify(accountInfo, null, 4));
 
@@ -25,14 +26,17 @@ export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequeli
 
     const flattenedTickers = flattenTickers(tickers);
 
-    let balances = addBtcPricesToBalances(accountInfo.balances, flattenedTickers);
-    balances = balances.filter(zeroBalanceFilter);
+    let mergedBalances = mergeBalances(accountInfo.balances);
+    mergedBalances = mergedBalances.filter(zeroBalanceFilter);
+    console.log('mergedBalances', mergedBalances);
+
+    const balances = addBtcPricesToBalances(mergedBalances, flattenedTickers);
+    // balances = balances.filter(zeroBalanceFilter);
     balances.forEach((balance) => {
         addFiatValueToBalance(balance, 'GBP', flattenedTickers);
         addFiatValueToBalance(balance, 'BUSD', flattenedTickers);
     });
-
-    console.log('balances', balances);
+    console.log('balances', JSON.stringify(balances, null, 4));
 
     for (let i = 0; i < balances.length; i++) {
         const balance = balances[i];

@@ -21,6 +21,7 @@
     "bignumber.js": "^9.0.1",
     "binance-api-node": "^0.10.19",
     "bootstrap": "^3.4.1",
+    "coinmarketcap-api": "^3.1.1",
     "connect-history-api-fallback": "^1.6.0",
     "cookie": "^0.4.0",
     "core-js": "^2.6.11",

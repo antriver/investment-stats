@@ -2,7 +2,7 @@ import fs from 'fs';
 import {
     addBtcPricesToBalances,
     addFiatValueToBalance,
-    flattenTickers,
+    flattenTickers, mergeBalances,
     zeroBalanceFilter,
 } from '../../src/functions/binance';
 
@@ -11,11 +11,23 @@ const tickers = JSON.parse(fs.readFileSync(__dirname + '/../data/binance-tickers
 
 describe('binance', () => {
     describe('addBtcPricesToBalances', () => {
-        const flattenedTickers = flattenTickers(tickers);
-        let balances = addBtcPricesToBalances(accountInfo.balances, flattenedTickers);
-        balances = balances.filter(zeroBalanceFilter);
+        it('Should produce balances with btc values', () => {
+            const flattenedTickers = flattenTickers(tickers);
+            let balances = addBtcPricesToBalances(accountInfo.balances, flattenedTickers);
+            balances = balances.filter(zeroBalanceFilter);
 
-        console.log(JSON.stringify(balances, null, 4));
+            console.log(JSON.stringify(balances, null, 4));
+        });
+    });
+
+    describe('mergeBalances', () => {
+        fit('Should merge balances', () => {
+            const balances = accountInfo.balances.filter(zeroBalanceFilter);
+            console.log(JSON.stringify(balances, null, 4));
+
+            const mergedBalances = mergeBalances(balances);
+            console.log(JSON.stringify(mergedBalances, null, 4));
+        });
     });
 
     describe('flattenTickers', () => {
@@ -27,14 +39,16 @@ describe('binance', () => {
     });
 
     describe('addFiatValueToBalance', () => {
-        const flattenedTickers = flattenTickers(tickers);
-        let balances = addBtcPricesToBalances(accountInfo.balances, flattenedTickers);
-        balances = balances.filter(zeroBalanceFilter);
-        balances.forEach((balance) => {
-            addFiatValueToBalance(balance, 'GBP', flattenedTickers);
-            addFiatValueToBalance(balance, 'BUSD', flattenedTickers);
-        });
+        it('Should add fiat values to balances', () => {
+            const flattenedTickers = flattenTickers(tickers);
+            let balances = addBtcPricesToBalances(accountInfo.balances, flattenedTickers);
+            balances = balances.filter(zeroBalanceFilter);
+            balances.forEach((balance) => {
+                addFiatValueToBalance(balance, 'GBP', flattenedTickers);
+                addFiatValueToBalance(balance, 'BUSD', flattenedTickers);
+            });
 
-        console.log(JSON.stringify(balances, null, 4));
+            console.log(JSON.stringify(balances, null, 4));
+        });
     });
 });
