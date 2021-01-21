@@ -1,39 +1,29 @@
-import { AssetRepository } from '../src/backend/api/classes/AssetRepository';
-import { initializeDb } from '../src/backend/database';
+import { Sequelize } from 'sequelize';
+import { AssetRepository } from '../api/classes/AssetRepository';
+import { getRates, invertRates } from '../../functions/forex';
 import BigNumber from 'bignumber.js';
-import { execShellCommand } from '../src/functions/shell';
-import { getRates, invertRates } from '../src/functions/forex';
 
 const ysp = require('yahoo-stock-prices');
 
-require('dotenv').config();
-
-const run = async () => {
-    const sequelize = await initializeDb();
-
-    // Create a snapshot
-    const [snapshotId] = await sequelize.query('INSERT INTO snapshots () VALUES ()');
-
-    // Save crypto balances
-    await execShellCommand(`php ${__dirname}/save-balances.php ${snapshotId}`);
-
+export const saveStocksSnapshot = async (snapshotId: number, sequelize: Sequelize) => {
     const assetRepository = new AssetRepository(sequelize);
 
     const assets = await assetRepository.getCurrentAssets();
-    //const assets = [
-    //  {
-    //    asset: 'RR.L',
-    //    totalAmount: '164.45354600',
-    //    totalGbpPaid: '184.9864'
-    //  },
-    //]
-    //console.log('assets', assets);
+    // Limit to 1 stock for testing:
+    // const assets = [
+    //     {
+    //         asset: 'RR.L',
+    //         totalAmount: '164.45354600',
+    //         totalGbpPaid: '184.9864',
+    //     },
+    // ];
+    console.log('assets', assets);
 
     const forexRates = await getRates();
     const inverseForexRates = invertRates(forexRates);
 
-    console.log(`GBP -> USD:`, forexRates.USD);
-    console.log(`GBP <- USD:`, inverseForexRates.USD);
+    console.log('GBP -> USD:', forexRates.USD);
+    console.log('GBP <- USD:', inverseForexRates.USD);
 
     for (let i = 0; i < assets.length; i++) {
         const price = await ysp.getCurrentData(assets[i].asset);
@@ -76,11 +66,9 @@ const run = async () => {
                     gbpPrice.toString(),
                     usdValue.toString(),
                     gbpValue.toString(),
-                    gbpProfit.toString()
-                ]
-            }
+                    gbpProfit.toString(),
+                ],
+            },
         );
     }
 };
-
-run();
