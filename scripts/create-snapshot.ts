@@ -1,7 +1,7 @@
 import { initializeDb } from '../src/backend/database';
 import { saveStocksSnapshot } from '../src/backend/snapshots/stocks';
 import { saveBinanceSnapshot } from '../src/backend/snapshots/binance';
-import { CoinMarketCap } from '../src/functions/CoinMarketCap';
+import { CoinMarketCap } from '../src/backend/functions/CoinMarketCap';
 import { AssetRepository } from '../src/backend/api/classes/AssetRepository';
 import { AssetInterface } from '../src/backend/api/models/AssetInterface';
 

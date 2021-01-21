@@ -4,7 +4,7 @@ import {
     addFiatValueToBalance,
     flattenTickers, mergeBalances,
     zeroBalanceFilter,
-} from '../../src/functions/binance';
+} from '../../src/backend/functions/binance';
 
 const accountInfo = JSON.parse(fs.readFileSync(__dirname + '/../data/binance-account-info.json').toString());
 const tickers = JSON.parse(fs.readFileSync(__dirname + '/../data/binance-tickers.json').toString());

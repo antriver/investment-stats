@@ -5,7 +5,7 @@ import {
     addFiatValueToBalance,
     flattenTickers, mergeBalances,
     zeroBalanceFilter,
-} from '../../functions/binance';
+} from '../functions/binance';
 
 const createBinance = () => {
     return Binance({

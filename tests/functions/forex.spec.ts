@@ -1,4 +1,4 @@
-import { getRates, invertRates } from '../../src/functions/forex';
+import { getRates, invertRates } from '../../src/backend/functions/forex';
 
 describe('forex', () => {
     describe('getRates', () => {

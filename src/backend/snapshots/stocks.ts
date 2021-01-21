@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { AssetRepository } from '../api/classes/AssetRepository';
-import { getRates, invertRates } from '../../functions/forex';
+import { getRates, invertRates } from '../functions/forex';
 import BigNumber from 'bignumber.js';
 
 const ysp = require('yahoo-stock-prices');
