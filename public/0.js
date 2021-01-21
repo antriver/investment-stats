@@ -32,6 +32,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = (vue__WEBPACK_IMPORTED_MODULE_1__["default"].extend({
@@ -42,6 +50,10 @@ __webpack_require__.r(__webpack_exports__);
     asset: {
       type: Object,
       required: true
+    },
+    profitDisplay: {
+      type: String,
+      "default": 'fiat'
     }
   }
 }));
@@ -75,6 +87,10 @@ __webpack_require__.r(__webpack_exports__);
     asCurrency: {
       type: Boolean,
       "default": false
+    },
+    asPercentage: {
+      type: Boolean,
+      "default": false
     }
   }
 }));
@@ -101,6 +117,26 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -190,7 +226,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       /**
        * @type {SnapshotAsset[]|null}
        */
-      compareToSnapshotAssets: null
+      compareToSnapshotAssets: null,
+
+      /**
+       * @type {string}
+       */
+      profitDisplay: 'fiat'
     };
   },
   created: function created() {
@@ -284,12 +325,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           return;
         }
 
-        a.gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(a.gbpValue).minus(oa.totalGbpPaid).decimalPlaces(2).toNumber();
+        var gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(a.gbpValue).minus(oa.totalGbpPaid);
+        a.gbpProfit = gbpProfit.decimalPlaces(2).toNumber(); // Calculate percentage profit.
+
+        a.percentageProfit = gbpProfit.dividedBy(oa.totalGbpPaid).multipliedBy(100).decimalPlaces(2).toNumber();
       });
+
+      if (this.profitDisplay === 'percent') {
+        this.sortByPercentageProfit(currentAssets);
+      }
+
       return currentAssets;
     }
   },
   methods: {
+    sortByPercentageProfit: function sortByPercentageProfit(assets) {
+      assets.sort(function (a, b) {
+        var aProfit = a.percentageProfit || 0;
+        var bProfit = b.percentageProfit || 0;
+
+        if (aProfit === bProfit) {
+          return 0;
+        }
+
+        return aProfit > bProfit ? -1 : 1;
+      });
+    },
     setCompareToSnapshot: function setCompareToSnapshot(snapshot) {
       var _this4 = this;
 
@@ -340,7 +401,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "@media screen and (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (max-width: 767px) {\n}.asset-grid .asset-card {\n  margin-bottom: 20px;\n}\n.right {\n  padding: 20px;\n}\n.right h4 {\n  font-size: 16px;\n  text-align: center;\n}\n.right .nav {\n  margin-top: 20px;\n}\n@media (min-width: 1200px) {\n.asset-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr 1fr;\n    grid-gap: 20px;\n}\n.asset-grid .asset-card {\n    margin: 0;\n}\n#home {\n    display: flex;\n    align-items: stretch;\n    min-height: 100vh;\n}\n#home .left {\n    flex-grow: 1;\n    flex-shrink: 1;\n}\n#home .right {\n    flex-grow: 0;\n    flex-shrink: 0;\n}\n.right {\n    min-width: 250px;\n    background: #fff;\n    padding: 20px;\n    overflow-y: auto;\n    border-left: 1px solid #f1f3f5;\n}\n}\n", ""]);
+exports.push([module.i, "@media screen and (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (max-width: 767px) {\n}.asset-grid .asset-card {\n  margin-bottom: 20px;\n}\n#home .header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-bottom: 20px;\n}\n#home .header h4 {\n  flex-grow: 1;\n  margin: 0;\n  text-align: left;\n}\n#home .right {\n  padding: 20px;\n}\n#home .right .nav {\n  margin-top: 20px;\n}\n@media (min-width: 1200px) {\n.asset-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr 1fr;\n    grid-gap: 20px;\n}\n.asset-grid .asset-card {\n    margin: 0;\n}\n#home {\n    display: flex;\n    align-items: stretch;\n    min-height: 100vh;\n}\n#home .left {\n    flex-grow: 1;\n    flex-shrink: 1;\n}\n#home .right {\n    flex-grow: 0;\n    flex-shrink: 0;\n}\n.right {\n    min-width: 250px;\n    background: #fff;\n    padding: 20px;\n    overflow-y: auto;\n    border-left: 1px solid #f1f3f5;\n}\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -387,15 +448,34 @@ var render = function() {
       "div",
       { staticClass: "asset-card__value" },
       [
-        _vm.asset.gbpProfit !== null
-          ? _c("Difference", {
-              attrs: { value: _vm.asset.gbpProfit, "as-currency": true }
-            })
+        _vm.profitDisplay === "fiat"
+          ? [
+              _vm.asset.gbpProfit !== null
+                ? _c("Difference", {
+                    attrs: { value: _vm.asset.gbpProfit, "as-currency": true }
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              _c("small", [
+                _vm._v(_vm._s(_vm._f("currency")(_vm.asset.gbpValue)))
+              ])
+            ]
           : _vm._e(),
         _vm._v(" "),
-        _c("small", [_vm._v(_vm._s(_vm._f("currency")(_vm.asset.gbpValue)))])
+        _vm.profitDisplay === "percent"
+          ? [
+              _vm.asset.percentageProfit !== undefined
+                ? _c("Difference", {
+                    attrs: {
+                      value: _vm.asset.percentageProfit,
+                      "as-percentage": true
+                    }
+                  })
+                : _vm._e()
+            ]
+          : _vm._e()
       ],
-      1
+      2
     )
   ])
 }
@@ -426,7 +506,10 @@ var render = function() {
     { class: { "text-danger": _vm.value < 0, "text-success": _vm.value > 0 } },
     [
       _vm._v(
-        "\n    " + _vm._s(_vm._f("profit")(_vm.value, _vm.asCurrency)) + "\n"
+        "\n    " +
+          _vm._s(_vm._f("profit")(_vm.value, _vm.asCurrency)) +
+          _vm._s(_vm.asPercentage ? "%" : "") +
+          "\n"
       )
     ]
   )
@@ -459,9 +542,9 @@ var render = function() {
         "div",
         { staticClass: "assets container" },
         [
-          _vm.compareToSnapshot
-            ? [
-                _c("p", { staticClass: "text-center" }, [
+          _c("header", { staticClass: "header" }, [
+            _vm.compareToSnapshot
+              ? _c("h4", [
                   _vm._v(
                     "\n                    " +
                       _vm._s(
@@ -473,8 +556,56 @@ var render = function() {
                       ) +
                       "\n                "
                   )
-                ]),
-                _vm._v(" "),
+                ])
+              : _vm.latestSnapshot
+              ? _c("h4", [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(
+                        _vm._f("relativeTime")(_vm.latestSnapshot.createdAt)
+                      ) +
+                      "\n                "
+                  )
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("div", { staticClass: "btn-group" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default",
+                  class: { active: _vm.profitDisplay === "percent" },
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.profitDisplay = "percent"
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-percent" })]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default",
+                  class: { active: _vm.profitDisplay === "fiat" },
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.profitDisplay = "fiat"
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-pound-sign" })]
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _vm.compareToSnapshot
+            ? [
                 _vm.compareToSnapshotAssets
                   ? _c(
                       "div",
@@ -482,7 +613,10 @@ var render = function() {
                       _vm._l(_vm.comparedAssets, function(asset) {
                         return _c("AssetCard", {
                           key: asset.id,
-                          attrs: { asset: asset }
+                          attrs: {
+                            "profit-display": _vm.profitDisplay,
+                            asset: asset
+                          }
                         })
                       }),
                       1
@@ -491,19 +625,16 @@ var render = function() {
               ]
             : _vm.latestSnapshotAssets
             ? [
-                _c("p", { staticClass: "text-center" }, [
-                  _vm._v(
-                    _vm._s(_vm._f("relativeTime")(_vm.latestSnapshot.createdAt))
-                  )
-                ]),
-                _vm._v(" "),
                 _c(
                   "div",
                   { staticClass: "asset-grid" },
                   _vm._l(_vm.latestSnapshotAssetsWithProfit, function(asset) {
                     return _c("AssetCard", {
                       key: asset.id,
-                      attrs: { asset: asset }
+                      attrs: {
+                        "profit-display": _vm.profitDisplay,
+                        asset: asset
+                      }
                     })
                   }),
                   1

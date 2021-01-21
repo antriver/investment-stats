@@ -2,24 +2,44 @@
     <div id="home">
         <div class="left">
             <div class="assets container">
-                <template v-if="compareToSnapshot">
-                    <p class="text-center">
+
+                <header class="header">
+                    <h4 v-if="compareToSnapshot">
                         {{ latestSnapshot.createdAt | relativeTime }}
                         compared to
                         {{ compareToSnapshot.createdAt | relativeTime }}
-                    </p>
+                    </h4>
+                    <h4 v-else-if="latestSnapshot">
+                        {{ latestSnapshot.createdAt | relativeTime }}
+                    </h4>
+
+                    <div class="btn-group">
+                        <button type="button"
+                                class="btn btn-default"
+                                :class="{'active':profitDisplay === 'percent'}"
+                                @click.prevent="profitDisplay='percent'">
+                            <i class="fas fa-percent"></i>
+                        </button>
+                        <button type="button"
+                                class="btn btn-default"
+                                :class="{'active':profitDisplay === 'fiat'}"
+                                @click.prevent="profitDisplay='fiat'"><i class="fas fa-pound-sign"></i></button>
+                    </div>
+                </header>
+
+                <template v-if="compareToSnapshot">
                     <div v-if="compareToSnapshotAssets"
                          class="asset-grid">
                         <AssetCard v-for="asset in comparedAssets"
+                                   :profit-display="profitDisplay"
                                    :key="asset.id"
                                    :asset="asset" />
                     </div>
                 </template>
-                <template v-else-if="latestSnapshotAssets"
-                          class="asset-grid">
-                    <p class="text-center">{{ latestSnapshot.createdAt | relativeTime }}</p>
+                <template v-else-if="latestSnapshotAssets">
                     <div class="asset-grid">
                         <AssetCard v-for="asset in latestSnapshotAssetsWithProfit"
+                                   :profit-display="profitDisplay"
                                    :key="asset.id"
                                    :asset="asset" />
                     </div>
@@ -91,6 +111,11 @@ export default {
              * @type {SnapshotAsset[]|null}
              */
             compareToSnapshotAssets: null,
+
+            /**
+             * @type {string}
+             */
+            profitDisplay: 'fiat',
         };
     },
 
@@ -176,17 +201,40 @@ export default {
                     return;
                 }
 
-                a.gbpProfit = (new BigNumber(a.gbpValue))
-                    .minus(oa.totalGbpPaid)
+                const gbpProfit = (new BigNumber(a.gbpValue)).minus(oa.totalGbpPaid);
+
+                a.gbpProfit = gbpProfit
+                    .decimalPlaces(2)
+                    .toNumber();
+
+                // Calculate percentage profit.
+                a.percentageProfit = gbpProfit.dividedBy(oa.totalGbpPaid)
+                    .multipliedBy(100)
                     .decimalPlaces(2)
                     .toNumber();
             });
+
+            if (this.profitDisplay === 'percent') {
+                this.sortByPercentageProfit(currentAssets);
+            }
 
             return currentAssets;
         },
     },
 
     methods: {
+        sortByPercentageProfit(assets) {
+            assets.sort((a, b) => {
+                const aProfit = a.percentageProfit || 0;
+                const bProfit = b.percentageProfit || 0;
+
+                if (aProfit === bProfit) {
+                    return 0;
+                }
+                return aProfit > bProfit ? -1 : 1;
+            });
+        },
+
         setCompareToSnapshot(snapshot) {
             if (!snapshot) {
                 this.compareToSnapshot = null;
@@ -214,16 +262,26 @@ export default {
     }
 }
 
-.right {
-    padding: 20px;
+#home {
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
 
-    h4 {
-        font-size: 16px;
-        text-align: center;
+        h4 {
+            flex-grow: 1;
+            margin: 0;
+            text-align: left;
+        }
     }
 
-    .nav {
-        margin-top: 20px;
+    .right {
+        padding: 20px;
+
+        .nav {
+            margin-top: 20px;
+        }
     }
 }
 

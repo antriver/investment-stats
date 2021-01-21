@@ -7,4 +7,5 @@ export interface SnapshotAsset {
     amount: string;
     gbpValue: number;
     gbpProfit: number;
+    percentageProfit?: number;
 }

@@ -11,10 +11,18 @@
         </div>
 
         <div class="asset-card__value">
-            <Difference v-if="asset.gbpProfit !== null"
-                        :value="asset.gbpProfit"
-                        :as-currency="true"></Difference>
-            <small>{{ asset.gbpValue | currency }}</small>
+            <template v-if="profitDisplay === 'fiat'">
+                <Difference v-if="asset.gbpProfit !== null"
+                            :value="asset.gbpProfit"
+                            :as-currency="true"></Difference>
+                <small>{{ asset.gbpValue | currency }}</small>
+            </template>
+
+            <template v-if="profitDisplay === 'percent'">
+                <Difference v-if="asset.percentageProfit !== undefined"
+                            :value="asset.percentageProfit"
+                            :as-percentage="true"></Difference>
+            </template>
         </div>
     </div>
 </template>
@@ -31,6 +39,10 @@ export default Vue.extend({
         asset: {
             type: Object,
             required: true,
+        },
+        profitDisplay: {
+            type: String,
+            default: 'fiat',
         },
     },
 });

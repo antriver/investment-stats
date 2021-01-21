@@ -1,6 +1,6 @@
 <template>
     <span :class="{ 'text-danger': value < 0, 'text-success': value > 0 }">
-        {{ value | profit(asCurrency) }}
+        {{ value | profit(asCurrency) }}{{ asPercentage ? '%' : '' }}
     </span>
 </template>
 
@@ -15,6 +15,10 @@ export default Vue.extend({
             required: true,
         },
         asCurrency: {
+            type: Boolean,
+            default: false,
+        },
+        asPercentage: {
             type: Boolean,
             default: false,
         },

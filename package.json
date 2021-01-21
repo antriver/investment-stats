@@ -15,6 +15,7 @@
     "@babel/core": "^7.9.0",
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.9.0",
+    "@fortawesome/fontawesome-pro": "https://anthonykuske.com/fontawesome/fortawesome-fontawesome-pro-5.14.0.tgz",
     "@types/bignumber.js": "^5.0.0",
     "@types/express": "^4.17.9",
     "axios": "^0.19.2",
