@@ -294,7 +294,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         });
       };
 
-      return currentAssets.filter(function (asset) {
+      currentAssets = currentAssets.filter(function (asset) {
         // Filter out assets we have now that we didn't then.
         return !!findOldAsset(asset.asset);
       }).map(function (asset) {
@@ -307,6 +307,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         asset.amountChange = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(asset.amount).minus(oldAsset.amount).decimalPlaces(4, bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a.ROUND_HALF_UP).toNumber();
         return asset;
       });
+
+      if (this.profitDisplay === 'percent') {
+        this.sortByPercentageProfit(currentAssets);
+      } else if (this.profitDisplay === 'fiat') {
+        this.sortByGbpProfit(currentAssets);
+      }
+
+      return currentAssets;
     },
     latestSnapshotAssetsWithProfit: function latestSnapshotAssetsWithProfit() {
       var _this3 = this;
@@ -336,6 +344,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       if (this.profitDisplay === 'percent') {
         this.sortByPercentageProfit(currentAssets);
+      } else if (this.profitDisplay === 'fiat') {
+        this.sortByGbpProfit(currentAssets);
       }
 
       return currentAssets;
@@ -346,6 +356,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       assets.sort(function (a, b) {
         var aProfit = a.percentageProfit || 0;
         var bProfit = b.percentageProfit || 0;
+
+        if (aProfit === bProfit) {
+          return 0;
+        }
+
+        return aProfit > bProfit ? -1 : 1;
+      });
+    },
+    sortByGbpProfit: function sortByGbpProfit(assets) {
+      assets.sort(function (a, b) {
+        var aProfit = a.gbpProfit || 0;
+        var bProfit = b.gbpProfit || 0;
 
         if (aProfit === bProfit) {
           return 0;

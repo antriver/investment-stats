@@ -156,11 +156,11 @@ export default {
             console.log('comparedAssets');
 
             /** @type {SnapshotAsset[]} */
-            const currentAssets = cloneDeep(this.latestSnapshotAssets);
+            let currentAssets = cloneDeep(this.latestSnapshotAssets);
 
             const findOldAsset = (asset) => this.compareToSnapshotAssets.find((a) => a.asset === asset);
 
-            return currentAssets
+            currentAssets = currentAssets
                 .filter((asset) => {
                     // Filter out assets we have now that we didn't then.
                     return !!findOldAsset(asset.asset);
@@ -189,6 +189,14 @@ export default {
 
                     return asset;
                 });
+
+            if (this.profitDisplay === 'percent') {
+                this.sortByPercentageProfit(currentAssets);
+            } else if (this.profitDisplay === 'fiat') {
+                this.sortByGbpProfit(currentAssets);
+            }
+
+            return currentAssets;
         },
 
         latestSnapshotAssetsWithProfit() {
@@ -224,6 +232,8 @@ export default {
 
             if (this.profitDisplay === 'percent') {
                 this.sortByPercentageProfit(currentAssets);
+            } else if (this.profitDisplay === 'fiat') {
+                this.sortByGbpProfit(currentAssets);
             }
 
             return currentAssets;
@@ -235,6 +245,18 @@ export default {
             assets.sort((a, b) => {
                 const aProfit = a.percentageProfit || 0;
                 const bProfit = b.percentageProfit || 0;
+
+                if (aProfit === bProfit) {
+                    return 0;
+                }
+                return aProfit > bProfit ? -1 : 1;
+            });
+        },
+
+        sortByGbpProfit(assets) {
+            assets.sort((a, b) => {
+                const aProfit = a.gbpProfit || 0;
+                const bProfit = b.gbpProfit || 0;
 
                 if (aProfit === bProfit) {
                     return 0;
