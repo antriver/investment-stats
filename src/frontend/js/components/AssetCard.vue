@@ -2,23 +2,31 @@
     <div class="asset-card">
         <div class="asset-card__name">
             {{ asset.name }}
-            <small>{{ asset.amount | round(4) }} {{ asset.asset }}</small>
+            <small>
+                {{ asset.amount | round(4) }}
+                {{ asset.asset }}
+                <Difference v-if="asset.amountChange"
+                            :value="asset.amountChange"></Difference>
+            </small>
         </div>
 
         <div class="asset-card__value">
-            <span v-if="asset.gbpProfit !== null"
-                  :class="{ 'text-danger': asset.gbpProfit < 0, 'text-success': asset.gbpProfit > 0 }">
-                {{ asset.gbpProfit | profit }}
-            </span>
+            <Difference v-if="asset.gbpProfit !== null"
+                        :value="asset.gbpProfit"
+                        :as-currency="true"></Difference>
             <small>{{ asset.gbpValue | currency }}</small>
         </div>
     </div>
 </template>
 
 <script>
+import Difference from '@/frontend/js/components/Difference.vue';
 import Vue from 'vue';
 
 export default Vue.extend({
+    components: {
+        Difference,
+    },
     props: {
         asset: {
             type: Object,
@@ -37,12 +45,6 @@ export default Vue.extend({
     display: flex;
     align-items: center;
     justify-content: center;
-
-    small {
-        color: #999;
-        display: block;
-        font-size: 13px;
-    }
 
     &__name {
         flex-grow: 1;

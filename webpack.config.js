@@ -27,7 +27,7 @@ const webpackConfig = {
 
     resolve: {
         alias: {
-            '@frontend': path.join(__dirname, './src/frontend/js/'),
+            '@': path.join(__dirname, './src/'),
         },
         extensions: ['.js', '.json', '.vue'],
     },
