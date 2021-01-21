@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js';
 
 BigNumber.config({
     ROUNDING_MODE: BigNumber.ROUND_DOWN,
-    EXPONENTIAL_AT: 9
+    EXPONENTIAL_AT: 9,
 });
 
 interface TickerPrice {
@@ -26,6 +26,7 @@ interface BalanceValue {
 
 interface BalanceWithValues extends Balance {
     total: string;
+    prices: {[key: string]: number};
     values: {[key: string]: BalanceValue};
 }
 
@@ -88,6 +89,10 @@ export const addBtcPricesToBalances = (balances: Balance[], tickers: FlattenedTi
         const balanceWithValues: BalanceWithValues = {
             ...balance,
             total: total.decimalPlaces(8).toString(),
+            prices: {
+                GBP: convertValue(tickers, 'BTC', 'GBP', convertValue(tickers, symbol, 'BTC', new BigNumber(1))).decimalPlaces(4, BigNumber.ROUND_HALF_UP).toNumber(),
+                BUSD: convertValue(tickers, 'BTC', 'BUSD', convertValue(tickers, symbol, 'BTC', new BigNumber(1))).decimalPlaces(4, BigNumber.ROUND_HALF_UP).toNumber(),
+            },
             values: {},
         };
 

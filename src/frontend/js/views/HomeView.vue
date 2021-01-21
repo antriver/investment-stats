@@ -4,6 +4,15 @@
             <div class="assets container">
 
                 <header class="header">
+                    <button type="button"
+                            class="btn btn-default mr-1"
+                            @click.prevent="createSnapshot">
+                        <i v-if="snapshotInProgress"
+                           class="fas fa-spinner fa-spin"></i>
+                        <i v-else
+                           class="fas fa-sync"></i>
+                    </button>
+
                     <h4 v-if="compareToSnapshot">
                         {{ latestSnapshot.createdAt | relativeTime }}
                         compared to
@@ -116,6 +125,11 @@ export default {
              * @type {string}
              */
             profitDisplay: 'fiat',
+
+            /**
+             * @type {boolean}
+             */
+            snapshotInProgress: false,
         };
     },
 
@@ -277,6 +291,21 @@ export default {
                 .then(({ data }) => {
                     this.compareToSnapshot = data.snapshot;
                     this.compareToSnapshotAssets = data.assets;
+                });
+        },
+
+        createSnapshot() {
+            if (this.snapshotInProgress) {
+                return;
+            }
+
+            this.snapshotInProgress = true;
+            axios.post('/api/snapshots')
+                .then(({ data }) => {
+                    window.location.reload();
+                })
+                .finally(() => {
+                    this.snapshotInProgress = false;
                 });
         },
     },

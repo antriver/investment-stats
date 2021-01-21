@@ -3,6 +3,7 @@ import { Sequelize } from 'sequelize';
 import { AssetRepository } from '../classes/AssetRepository';
 import { SnapshotRepository } from '../classes/SnapshotRepository';
 import { OwnedAsset } from '../models/OwnedAsset';
+import { createSnapshot } from '../functions/snapshots/snapshots';
 
 export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> => {
     console.log('Initializing API...');
@@ -51,5 +52,11 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
         const snapshots = await snapshotRepository.getSnapshots();
 
         res.json(snapshots);
+    });
+
+    expressApp.post('/api/snapshots', async (req, res) => {
+        const snapshotId = await createSnapshot(db);
+
+        res.json({ snapshotId });
     });
 };

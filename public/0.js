@@ -44,6 +44,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = (vue__WEBPACK_IMPORTED_MODULE_1__["default"].extend({
@@ -192,6 +193,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -235,7 +245,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       /**
        * @type {string}
        */
-      profitDisplay: 'fiat'
+      profitDisplay: 'fiat',
+
+      /**
+       * @type {boolean}
+       */
+      snapshotInProgress: false
     };
   },
   created: function created() {
@@ -395,6 +410,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         _this4.compareToSnapshot = data.snapshot;
         _this4.compareToSnapshotAssets = data.assets;
       });
+    },
+    createSnapshot: function createSnapshot() {
+      var _this5 = this;
+
+      if (this.snapshotInProgress) {
+        return;
+      }
+
+      this.snapshotInProgress = true;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/snapshots').then(function (_ref5) {
+        var data = _ref5.data;
+        window.location.reload();
+      })["finally"](function () {
+        _this5.snapshotInProgress = false;
+      });
     }
   }
 });
@@ -456,7 +486,7 @@ var render = function() {
     _vm.asset.logoUrl
       ? _c("img", {
           staticClass: "asset-card__logo",
-          attrs: { src: _vm.asset.logoUrl }
+          attrs: { src: _vm.asset.logoUrl, alt: _vm.asset.name }
         })
       : _vm._e(),
     _vm._v(" "),
@@ -470,6 +500,8 @@ var render = function() {
               _vm._s(_vm._f("round")(_vm.asset.amount, 4)) +
               "\n            " +
               _vm._s(_vm.asset.asset) +
+              " @ " +
+              _vm._s(_vm._f("currency")(_vm.asset.usdPrice, "USD")) +
               "\n            "
           ),
           _vm.asset.amountChange
@@ -579,6 +611,25 @@ var render = function() {
         { staticClass: "assets container" },
         [
           _c("header", { staticClass: "header" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-default mr-1",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.createSnapshot($event)
+                  }
+                }
+              },
+              [
+                _vm.snapshotInProgress
+                  ? _c("i", { staticClass: "fas fa-spinner fa-spin" })
+                  : _c("i", { staticClass: "fas fa-sync" })
+              ]
+            ),
+            _vm._v(" "),
             _vm.compareToSnapshot
               ? _c("h4", [
                   _vm._v(

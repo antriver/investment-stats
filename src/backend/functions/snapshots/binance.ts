@@ -5,7 +5,8 @@ import {
     addFiatValueToBalance,
     flattenTickers, mergeBalances,
     zeroBalanceFilter,
-} from '../functions/binance';
+} from '../binance';
+import BigNumber from 'bignumber.js';
 
 const createBinance = () => {
     return Binance({
@@ -49,8 +50,8 @@ export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequeli
                     'binance',
                     balance.asset,
                     balance.total,
-                    null,
-                    null,
+                    balance.prices.BUSD,
+                    balance.prices.GBP,
                     balance.values.BUSD.total,
                     balance.values.GBP.total,
                     null,

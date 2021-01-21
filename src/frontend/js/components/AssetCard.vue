@@ -2,13 +2,14 @@
     <div class="asset-card">
         <img v-if="asset.logoUrl"
              :src="asset.logoUrl"
+             :alt="asset.name"
              class="asset-card__logo" />
 
         <div class="asset-card__name">
             {{ asset.name }}
             <small>
                 {{ asset.amount | round(4) }}
-                {{ asset.asset }}
+                {{ asset.asset }} @ {{ asset.usdPrice | currency('USD') }}
                 <Difference v-if="asset.amountChange"
                             :value="asset.amountChange"></Difference>
             </small>
