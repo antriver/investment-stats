@@ -25,4 +25,22 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
 
         res.json(response);
     });
+
+    expressApp.get('/api/snapshots/:snapshotId', async (req, res) => {
+        const snapshot = await snapshotRepository.get(req.params.snapshotId);
+        const assets = await snapshotRepository.getSnapshotAssets(snapshot.id);
+
+        const response = {
+            snapshot,
+            assets
+        };
+
+        res.json(response);
+    });
+
+    expressApp.get('/api/snapshots', async (req, res) => {
+        const snapshots = await snapshotRepository.getSnapshots();
+
+        res.json(snapshots);
+    });
 };

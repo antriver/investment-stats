@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 
-BigNumber.config({ ROUNDING_MODE: 0 });
-BigNumber.set({ ROUNDING_MODE: BigNumber.ROUND_HALF_UP });
-BigNumber.set({ EXPONENTIAL_AT: 9 });
+BigNumber.config({
+    ROUNDING_MODE: BigNumber.ROUND_DOWN,
+    EXPONENTIAL_AT: 9
+});
 
 interface TickerPrice {
     symbol: string;

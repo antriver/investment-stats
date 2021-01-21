@@ -21,7 +21,7 @@ describe('binance', () => {
     });
 
     describe('mergeBalances', () => {
-        fit('Should merge balances', () => {
+        it('Should merge balances', () => {
             const balances = accountInfo.balances.filter(zeroBalanceFilter);
             console.log(JSON.stringify(balances, null, 4));
 

@@ -7,7 +7,7 @@
 
         <div class="asset-card__value">
             <span v-if="asset.gbpProfit !== null"
-                  :class="[asset.gbpProfit < 0 ? 'text-danger' : 'text-success']">
+                  :class="{ 'text-danger': asset.gbpProfit < 0, 'text-success': asset.gbpProfit > 0 }">
                 {{ asset.gbpProfit | profit }}
             </span>
             <small>{{ asset.gbpValue | currency }}</small>

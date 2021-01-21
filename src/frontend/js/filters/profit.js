@@ -11,7 +11,9 @@ import { currency } from '@frontend/filters/currency';
 export const profit = function (value) {
     let str = '';
 
-    if (value >= 0) {
+    if (parseFloat(value) === 0) {
+        str += '';
+    } else if (value >= 0) {
         str += '+';
     } else {
         str += '-';

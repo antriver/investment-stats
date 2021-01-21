@@ -51,6 +51,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _frontend_components_AssetCard_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @frontend/components/AssetCard.vue */ "./src/frontend/js/components/AssetCard.vue");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bignumber.js */ "./node_modules/bignumber.js/bignumber.js");
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bignumber_js__WEBPACK_IMPORTED_MODULE_3__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -67,6 +71,30 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -83,14 +111,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       /**
        * @type {SnapshotAsset[]}
        */
-      latestSnapshotAssets: null
+      latestSnapshotAssets: null,
+
+      /**
+       * @type {Snapshot[]}
+       */
+      availableSnapshots: [],
+
+      /**
+       * @type {Snapshot|null}
+       */
+      compareToSnapshot: null,
+
+      /**
+       * @type {SnapshotAsset[]|null}
+       */
+      compareToSnapshotAssets: null
     };
   },
   created: function created() {
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var response, assets;
+      var latestSnapshotResponse, assets, availableSnapshotsResponse;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -99,9 +142,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/snapshots/latest');
 
             case 2:
-              response = _context.sent;
-              _this.latestSnapshot = response.data.snapshot;
-              assets = response.data.assets;
+              latestSnapshotResponse = _context.sent;
+              _this.latestSnapshot = latestSnapshotResponse.data.snapshot;
+              assets = latestSnapshotResponse.data.assets;
               assets.forEach(function (a) {
                 a.gbpProfitFloat = parseFloat(a.gbpProfit || 0);
               });
@@ -117,8 +160,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return 0;
               });
               _this.latestSnapshotAssets = assets;
+              _context.next = 10;
+              return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/snapshots');
 
-            case 8:
+            case 10:
+              availableSnapshotsResponse = _context.sent;
+              _this.availableSnapshots = availableSnapshotsResponse.data;
+
+            case 12:
             case "end":
               return _context.stop();
           }
@@ -133,16 +182,50 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
       sorted.sort(function (a, b) {
         return a.gbpProfit.toString().localeCompare(b.gbpProfit);
-      }); //     if (a.gbpProfit === b.gbpProfit) {
-      //         return 0;
-      //     }
-      //     return a.gbpProfit > b.gbpProfit ? -1 : 1;
-      // });
-
+      });
       return sorted;
+    },
+    compareAssets: function compareAssets() {
+      var _this2 = this;
+
+      /** @type {SnapshotAsset[]} */
+      var currentAssets = Object(lodash__WEBPACK_IMPORTED_MODULE_2__["cloneDeep"])(this.latestSnapshotAssets);
+
+      var findOldAsset = function findOldAsset(asset) {
+        return _this2.compareToSnapshotAssets.find(function (a) {
+          return a.asset === asset;
+        });
+      };
+
+      return currentAssets.filter(function (asset) {
+        // Filter out assets we have now that we didn't then.
+        return !!findOldAsset(asset.asset);
+      }).map(function (asset) {
+        var oldAsset = findOldAsset(asset.asset); // Recalculate values based on the old asset.
+
+        asset.gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(asset.gbpValue).minus(oldAsset.gbpValue).decimalPlaces(2).toNumber();
+        return asset;
+      });
     }
   },
-  methods: {}
+  methods: {
+    setCompareToSnapshot: function setCompareToSnapshot(snapshot) {
+      var _this3 = this;
+
+      if (!snapshot) {
+        this.compareToSnapshot = null;
+        this.compareToSnapshotAssets = null;
+        return;
+      }
+
+      this.compareToSnapshot = snapshot;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/snapshots/".concat(snapshot.id)).then(function (_ref) {
+        var data = _ref.data;
+        _this3.compareToSnapshot = data.snapshot;
+        _this3.compareToSnapshotAssets = data.assets;
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -158,7 +241,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".asset-card {\n  background: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(0, 0, 0, 0.05);\n  padding: 10px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.asset-card small {\n  color: #999;\n  display: block;\n  font-size: 13px;\n}\n.asset-card__name {\n  flex-grow: 1;\n}\n.asset-card__name small {\n  margin-top: 3px;\n}\n.asset-card__value {\n  flex-grow: 0;\n  flex-shrink: 0;\n  font-size: 15px;\n  text-align: right;\n}\n", ""]);
+exports.push([module.i, ".asset-card {\n  background: #ffffff;\n  border-radius: 10px;\n  box-shadow: rgba(0, 0, 0, 0.075) 0 2px 4px 0;\n  padding: 10px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.asset-card small {\n  color: #999;\n  display: block;\n  font-size: 13px;\n}\n.asset-card__name {\n  flex-grow: 1;\n}\n.asset-card__name small {\n  margin-top: 3px;\n}\n.asset-card__value {\n  flex-grow: 0;\n  flex-shrink: 0;\n  font-size: 15px;\n  text-align: right;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -215,7 +298,10 @@ var render = function() {
         ? _c(
             "span",
             {
-              class: [_vm.asset.gbpProfit < 0 ? "text-danger" : "text-success"]
+              class: {
+                "text-danger": _vm.asset.gbpProfit < 0,
+                "text-success": _vm.asset.gbpProfit > 0
+              }
             },
             [
               _vm._v(
@@ -253,18 +339,94 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container", attrs: { id: "home" } }, [
-    _vm.latestSnapshotAssets !== null
-      ? _c(
-          "div",
-          { staticClass: "asset-grid" },
-          _vm._l(_vm.latestSnapshotAssets, function(asset) {
-            return _c("AssetCard", { key: asset.id, attrs: { asset: asset } })
+  return _c(
+    "div",
+    { staticClass: "container", attrs: { id: "home" } },
+    [
+      _vm.compareToSnapshot
+        ? [
+            _c("p", { staticClass: "text-center" }, [
+              _vm._v(
+                "Comparing to " +
+                  _vm._s(
+                    _vm._f("relativeTime")(_vm.compareToSnapshot.createdAt)
+                  )
+              )
+            ]),
+            _vm._v(" "),
+            _vm.compareToSnapshotAssets
+              ? _c(
+                  "div",
+                  { staticClass: "asset-grid" },
+                  _vm._l(_vm.compareAssets, function(asset) {
+                    return _c("AssetCard", {
+                      key: asset.id,
+                      attrs: { asset: asset }
+                    })
+                  }),
+                  1
+                )
+              : _vm._e()
+          ]
+        : _vm.latestSnapshotAssets
+        ? [
+            _c("p", { staticClass: "text-center" }, [_vm._v("All time")]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "asset-grid" },
+              _vm._l(_vm.latestSnapshotAssets, function(asset) {
+                return _c("AssetCard", {
+                  key: asset.id,
+                  attrs: { asset: asset }
+                })
+              }),
+              1
+            )
+          ]
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "ul",
+        [
+          _vm._l(_vm.availableSnapshots, function(snapshot) {
+            return _c("li", { key: snapshot.id }, [
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.setCompareToSnapshot(snapshot)
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm._f("relativeTime")(snapshot.createdAt)))]
+              )
+            ])
           }),
-          1
-        )
-      : _vm._e()
-  ])
+          _vm._v(" "),
+          _c("li", [
+            _c(
+              "a",
+              {
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.setCompareToSnapshot(null)
+                  }
+                }
+              },
+              [_vm._v("All time")]
+            )
+          ])
+        ],
+        2
+      )
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
