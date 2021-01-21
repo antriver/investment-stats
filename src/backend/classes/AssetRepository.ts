@@ -11,17 +11,13 @@ export class AssetRepository {
             'SELECT * FROM current_assets',
             { type: QueryTypes.SELECT },
         );
-        // return this.db.query(
-        //    `SELECT
-        //         asset,
-        //         sum(amount) as totalAmount,
-        //         sum(gbpPaid) as totalGbpPaid
-        //     FROM asset_transactions
-        //     GROUP BY
-        //         asset
-        //     HAVING totalAmount > 0`,
-        //    { type: QueryTypes.SELECT },
-        // );
+    }
+
+    async getCurrentStocks(): Promise<OwnedAsset[]> {
+        return this.db.query(
+            "SELECT * FROM current_assets WHERE assetType = 'stock'",
+            { type: QueryTypes.SELECT },
+        );
     }
 
     async getAllCrypto(): Promise<{[key: string]: AssetInterface}> {

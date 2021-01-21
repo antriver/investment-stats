@@ -8,7 +8,7 @@ const ysp = require('yahoo-stock-prices');
 export const saveStocksSnapshot = async (snapshotId: number, sequelize: Sequelize) => {
     const assetRepository = new AssetRepository(sequelize);
 
-    const assets = await assetRepository.getCurrentAssets();
+    const assets = await assetRepository.getCurrentStocks();
     // Limit to 1 stock for testing:
     // const assets = [
     //     {
