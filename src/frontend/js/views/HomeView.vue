@@ -63,7 +63,7 @@
                     <a @click.prevent="setCompareToSnapshot(null)">None</a>
                 </li>
                 <li v-for="snapshot in availableSnapshots"
-                    v-if="snapshot.id !== latestSnapshot.id"
+                    v-if="!latestSnapshot || snapshot.id !== latestSnapshot.id"
                     :key="snapshot.id"
                     :class="{active: compareToSnapshot && snapshot.id === compareToSnapshot.id}">
                     <a href="#"

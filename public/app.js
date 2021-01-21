@@ -830,15 +830,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "currency", function() { return currency; });
 /**
  * @param {string} value
- * @param {string} currency
+ * @param {string} toCurrency
  *
  * @return {string}
  */
 var currency = function currency(value) {
-  var currency = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'GBP';
+  var toCurrency = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'GBP';
   var formatter = new Intl.NumberFormat('en-GB', {
     style: 'currency',
-    currency: currency,
+    currency: toCurrency,
     currencyDisplay: 'narrowSymbol'
   });
   return formatter.format(value);

@@ -756,7 +756,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _vm._l(_vm.availableSnapshots, function(snapshot) {
-            return snapshot.id !== _vm.latestSnapshot.id
+            return !_vm.latestSnapshot || snapshot.id !== _vm.latestSnapshot.id
               ? _c(
                   "li",
                   {
