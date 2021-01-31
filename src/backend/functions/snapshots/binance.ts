@@ -34,8 +34,10 @@ export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequeli
     const balances = addBtcPricesToBalances(mergedBalances, flattenedTickers);
     // balances = balances.filter(zeroBalanceFilter);
     balances.forEach((balance) => {
-        addFiatValueToBalance(balance, 'GBP', flattenedTickers);
-        addFiatValueToBalance(balance, 'BUSD', flattenedTickers);
+        if (balance.values.BTC) {
+            addFiatValueToBalance(balance, 'GBP', flattenedTickers);
+            addFiatValueToBalance(balance, 'BUSD', flattenedTickers);
+        }
     });
     console.log('balances', JSON.stringify(balances, null, 4));
 
@@ -50,10 +52,10 @@ export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequeli
                     'binance',
                     balance.asset,
                     balance.total,
-                    balance.prices.BUSD,
-                    balance.prices.GBP,
-                    balance.values.BUSD.total,
-                    balance.values.GBP.total,
+                    balance.prices.BUSD ? balance.prices.BUSD : null,
+                    balance.prices.GBP ? balance.prices.GBP : null,
+                    balance.values.BUSD ? balance.values.BUSD.total : null,
+                    balance.values.GBP ? balance.values.GBP.total : null,
                     null,
                 ],
             },

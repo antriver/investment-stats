@@ -86,25 +86,34 @@ export const addBtcPricesToBalances = (balances: Balance[], tickers: FlattenedTi
         const locked = new BigNumber(balance.locked);
         const total = (new BigNumber(balance.free)).plus(balance.locked);
 
-        const balanceWithValues: BalanceWithValues = {
-            ...balance,
-            total: total.decimalPlaces(8).toString(),
-            prices: {
-                GBP: convertValue(tickers, 'BTC', 'GBP', convertValue(tickers, symbol, 'BTC', new BigNumber(1))).decimalPlaces(4, BigNumber.ROUND_HALF_UP).toNumber(),
-                BUSD: convertValue(tickers, 'BTC', 'BUSD', convertValue(tickers, symbol, 'BTC', new BigNumber(1))).decimalPlaces(4, BigNumber.ROUND_HALF_UP).toNumber(),
-            },
-            values: {},
-        };
+        try {
+            const balanceWithValues: BalanceWithValues = {
+                ...balance,
+                total: total.decimalPlaces(8).toString(),
+                prices: {
+                    GBP: convertValue(tickers, 'BTC', 'GBP', convertValue(tickers, symbol, 'BTC', new BigNumber(1))).decimalPlaces(4, BigNumber.ROUND_HALF_UP).toNumber(),
+                    BUSD: convertValue(tickers, 'BTC', 'BUSD', convertValue(tickers, symbol, 'BTC', new BigNumber(1))).decimalPlaces(4, BigNumber.ROUND_HALF_UP).toNumber(),
+                },
+                values: {},
+            };
 
-        balanceWithValues.total = total.decimalPlaces(8).toString();
+            balanceWithValues.total = total.decimalPlaces(8).toString();
 
-        balanceWithValues.values.BTC = {
-            free: free.isEqualTo(0) ? '0.00000000' : convertValue(tickers, symbol, 'BTC', free).decimalPlaces(8).toString(),
-            locked: locked.isEqualTo(0) ? '0.00000000' : convertValue(tickers, symbol, 'BTC', locked).decimalPlaces(8).toString(),
-            total: total.isEqualTo(0) ? '0.00000000' : convertValue(tickers, symbol, 'BTC', total).decimalPlaces(8).toString(),
-        };
+            balanceWithValues.values.BTC = {
+                free: free.isEqualTo(0) ? '0.00000000' : convertValue(tickers, symbol, 'BTC', free).decimalPlaces(8).toString(),
+                locked: locked.isEqualTo(0) ? '0.00000000' : convertValue(tickers, symbol, 'BTC', locked).decimalPlaces(8).toString(),
+                total: total.isEqualTo(0) ? '0.00000000' : convertValue(tickers, symbol, 'BTC', total).decimalPlaces(8).toString(),
+            };
 
-        return balanceWithValues;
+            return balanceWithValues;
+        } catch (e) {
+            return {
+                ...balance,
+                total: total.decimalPlaces(8).toString(),
+                prices: {},
+                values: {}
+            }
+        }
     });
 };
 
