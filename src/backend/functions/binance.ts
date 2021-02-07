@@ -46,6 +46,10 @@ export const convertValue = (
     toSymbol: string,
     amount: BigNumber,
 ): BigNumber => {
+    if (fromSymbol === toSymbol) {
+        return amount;
+    }
+
     let rate: BigNumber = null;
     const symbol = fromSymbol + toSymbol;
     const reversedSymbol = toSymbol + fromSymbol;
