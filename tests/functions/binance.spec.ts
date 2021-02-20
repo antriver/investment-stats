@@ -1,6 +1,6 @@
 import fs from 'fs';
 import {
-    addBtcPricesToBalances,
+    addPricesToBalances,
     addFiatValueToBalance,
     flattenTickers, mergeBalances,
     zeroBalanceFilter,
@@ -13,7 +13,7 @@ describe('binance', () => {
     describe('addBtcPricesToBalances', () => {
         it('Should produce balances with btc values', () => {
             const flattenedTickers = flattenTickers(tickers);
-            let balances = addBtcPricesToBalances(accountInfo.balances, flattenedTickers);
+            let balances = addPricesToBalances(accountInfo.balances, flattenedTickers);
             balances = balances.filter(zeroBalanceFilter);
 
             console.log(JSON.stringify(balances, null, 4));
@@ -41,7 +41,7 @@ describe('binance', () => {
     describe('addFiatValueToBalance', () => {
         it('Should add fiat values to balances', () => {
             const flattenedTickers = flattenTickers(tickers);
-            let balances = addBtcPricesToBalances(accountInfo.balances, flattenedTickers);
+            let balances = addPricesToBalances(accountInfo.balances, flattenedTickers);
             balances = balances.filter(zeroBalanceFilter);
             balances.forEach((balance) => {
                 addFiatValueToBalance(balance, 'GBP', flattenedTickers);

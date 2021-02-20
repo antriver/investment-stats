@@ -1,9 +1,10 @@
 import Binance from 'binance-api-node';
 import { Sequelize } from 'sequelize';
 import {
-    addBtcPricesToBalances,
-    addFiatValueToBalance,
-    flattenTickers, mergeBalances,
+    addPricesToBalances,
+    createBalances,
+    flattenTickers,
+    mergeBalances,
     zeroBalanceFilter,
 } from '../binance';
 import BigNumber from 'bignumber.js';
@@ -27,18 +28,13 @@ export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequeli
 
     const flattenedTickers = flattenTickers(tickers);
 
-    let mergedBalances = mergeBalances(accountInfo.balances);
-    mergedBalances = mergedBalances.filter(zeroBalanceFilter);
-    console.log('mergedBalances', mergedBalances);
+    let balances = createBalances(accountInfo.balances);
+    balances = mergeBalances(balances);
+    balances = balances.filter(zeroBalanceFilter);
+    console.log('balances', balances);
 
-    const balances = addBtcPricesToBalances(mergedBalances, flattenedTickers);
-    // balances = balances.filter(zeroBalanceFilter);
-    balances.forEach((balance) => {
-        if (balance.values.BTC) {
-            addFiatValueToBalance(balance, 'GBP', flattenedTickers);
-            addFiatValueToBalance(balance, 'BUSD', flattenedTickers);
-        }
-    });
+    addPricesToBalances(balances, flattenedTickers);
+
     console.log('balances', JSON.stringify(balances, null, 4));
 
     for (let i = 0; i < balances.length; i++) {
@@ -54,8 +50,8 @@ export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequeli
                     balance.total,
                     balance.prices.BUSD ? balance.prices.BUSD : null,
                     balance.prices.GBP ? balance.prices.GBP : null,
-                    balance.values.BUSD ? balance.values.BUSD.total : null,
-                    balance.values.GBP ? balance.values.GBP.total : null,
+                    balance.values.BUSD ? balance.values.BUSD : null,
+                    balance.values.GBP ? balance.values.GBP : null,
                     null,
                 ],
             },
