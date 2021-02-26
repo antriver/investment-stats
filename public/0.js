@@ -111,13 +111,14 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _frontend_js_components_AssetCard_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/frontend/js/components/AssetCard.vue */ "./src/frontend/js/components/AssetCard.vue");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bignumber.js */ "./node_modules/bignumber.js/bignumber.js");
-/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bignumber_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _frontend_js_components_AssetCard_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/frontend/js/components/AssetCard.vue */ "./src/frontend/js/components/AssetCard.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bignumber.js */ "./node_modules/bignumber.js/bignumber.js");
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bignumber_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _frontend_js_components_Difference_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/frontend/js/components/Difference.vue */ "./src/frontend/js/components/Difference.vue");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -202,13 +203,58 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    AssetCard: _frontend_js_components_AssetCard_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    AssetCard: _frontend_js_components_AssetCard_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+    Difference: _frontend_js_components_Difference_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
     return {
@@ -261,11 +307,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/assets').then(function (_ref) {
+              axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/assets').then(function (_ref) {
                 var data = _ref.data;
                 _this.ownedAssets = data;
               });
-              axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/snapshots/latest').then(function (_ref2) {
+              axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/snapshots/latest').then(function (_ref2) {
                 var data = _ref2.data;
                 _this.latestSnapshot = data.snapshot;
                 var assets = data.assets;
@@ -285,7 +331,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 });
                 _this.latestSnapshotAssets = assets;
               });
-              axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/snapshots').then(function (_ref3) {
+              axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/api/snapshots').then(function (_ref3) {
                 var data = _ref3.data;
                 _this.availableSnapshots = data;
               });
@@ -305,7 +351,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       console.log('comparedAssets');
       /** @type {SnapshotAsset[]} */
 
-      var currentAssets = Object(lodash__WEBPACK_IMPORTED_MODULE_2__["cloneDeep"])(this.latestSnapshotAssets);
+      var currentAssets = Object(lodash__WEBPACK_IMPORTED_MODULE_4__["cloneDeep"])(this.latestSnapshotAssets);
 
       var findOldAsset = function findOldAsset(asset) {
         return _this2.compareToSnapshotAssets.find(function (a) {
@@ -319,11 +365,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }).map(function (asset) {
         var oldAsset = findOldAsset(asset.asset); // Recalculate values based on the old asset.
 
-        var gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(asset.gbpValue).minus(oldAsset.gbpValue);
+        var gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_2___default.a(asset.gbpValue).minus(oldAsset.gbpValue);
         asset.gbpProfit = gbpProfit.decimalPlaces(2).toNumber(); // Calculate percentage profit.
 
         asset.percentageProfit = gbpProfit.dividedBy(oldAsset.gbpValue).multipliedBy(100).decimalPlaces(2).toNumber();
-        asset.amountChange = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(asset.amount).minus(oldAsset.amount).decimalPlaces(4, bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a.ROUND_HALF_UP).toNumber();
+        asset.amountChange = new bignumber_js__WEBPACK_IMPORTED_MODULE_2___default.a(asset.amount).minus(oldAsset.amount).decimalPlaces(4, bignumber_js__WEBPACK_IMPORTED_MODULE_2___default.a.ROUND_HALF_UP).toNumber();
         return asset;
       });
 
@@ -341,7 +387,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       console.log('latestSnapshotAssetsWithProfit');
       /** @type {SnapshotAsset[]} */
 
-      var currentAssets = Object(lodash__WEBPACK_IMPORTED_MODULE_2__["cloneDeep"])(this.latestSnapshotAssets);
+      var currentAssets = Object(lodash__WEBPACK_IMPORTED_MODULE_4__["cloneDeep"])(this.latestSnapshotAssets);
       currentAssets.forEach(function (a) {
         // Clear profit returned by API as this is going to be removed.
         a.gbpProfit = null;
@@ -355,7 +401,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           return;
         }
 
-        var gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_3___default.a(a.gbpValue).minus(oa.totalGbpPaid);
+        var gbpProfit = new bignumber_js__WEBPACK_IMPORTED_MODULE_2___default.a(a.gbpValue).minus(oa.totalGbpPaid);
         a.gbpProfit = gbpProfit.decimalPlaces(2).toNumber(); // Calculate percentage profit.
 
         a.percentageProfit = gbpProfit.dividedBy(oa.totalGbpPaid).multipliedBy(100).decimalPlaces(2).toNumber();
@@ -405,7 +451,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       this.compareToSnapshot = snapshot;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/snapshots/".concat(snapshot.id)).then(function (_ref4) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get("/api/snapshots/".concat(snapshot.id)).then(function (_ref4) {
         var data = _ref4.data;
         _this4.compareToSnapshot = data.snapshot;
         _this4.compareToSnapshotAssets = data.assets;
@@ -419,7 +465,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       this.snapshotInProgress = true;
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/snapshots').then(function (_ref5) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/snapshots').then(function (_ref5) {
         var data = _ref5.data;
         window.location.reload();
       })["finally"](function () {
@@ -460,7 +506,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "@media screen and (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (max-width: 767px) {\n}.asset-grid .asset-card {\n  margin-bottom: 20px;\n}\n#home .header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-bottom: 20px;\n}\n#home .header h4 {\n  flex-grow: 1;\n  margin: 0;\n  text-align: left;\n}\n#home .right {\n  padding: 20px;\n}\n#home .right .nav {\n  margin-top: 20px;\n}\n@media (min-width: 1200px) {\n.asset-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr 1fr;\n    grid-gap: 20px;\n}\n.asset-grid .asset-card {\n    margin: 0;\n}\n#home {\n    display: flex;\n    align-items: stretch;\n    min-height: 100vh;\n}\n#home .left {\n    flex-grow: 1;\n    flex-shrink: 1;\n}\n#home .right {\n    flex-grow: 0;\n    flex-shrink: 0;\n}\n.right {\n    min-width: 250px;\n    background: #fff;\n    padding: 20px;\n    overflow-y: auto;\n    border-left: 1px solid #f1f3f5;\n}\n}\n", ""]);
+exports.push([module.i, "@media screen and (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (max-width: 767px) {\n}.asset-grid .asset-card {\n  margin-bottom: 20px;\n}\n.assets-table.table {\n  background: #fff;\n}\n.assets-table.table th,\n.assets-table.table td {\n  text-align: right !important;\n  vertical-align: middle !important;\n}\n.assets-table.table th:first-child,\n.assets-table.table td:first-child {\n  text-align: left !important;\n}\n#home .header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-bottom: 20px;\n}\n#home .header h4 {\n  flex-grow: 1;\n  margin: 0;\n  text-align: left;\n}\n#home .right {\n  padding: 20px;\n}\n#home .right .nav {\n  margin-top: 20px;\n}\n@media (min-width: 1200px) {\n.asset-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr 1fr;\n    grid-gap: 20px;\n}\n.asset-grid .asset-card {\n    margin: 0;\n}\n#home {\n    display: flex;\n    align-items: stretch;\n    min-height: 100vh;\n}\n#home .left {\n    flex-grow: 1;\n    flex-shrink: 1;\n}\n#home .right {\n    flex-grow: 0;\n    flex-shrink: 0;\n}\n.right {\n    min-width: 250px;\n    background: #fff;\n    padding: 20px;\n    overflow-y: auto;\n    border-left: 1px solid #f1f3f5;\n}\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -691,6 +737,82 @@ var render = function() {
             ])
           ]),
           _vm._v(" "),
+          _vm.latestSnapshotAssets
+            ? _c("table", { staticClass: "table assets-table" }, [
+                _vm._m(0),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.latestSnapshotAssetsWithProfit, function(asset) {
+                    return _c("tr", { key: asset.asset }, [
+                      _c("td", [
+                        asset.logoUrl
+                          ? _c("img", {
+                              staticClass: "asset-card__logo",
+                              attrs: { src: asset.logoUrl, alt: asset.name }
+                            })
+                          : _vm._e(),
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(asset.name) +
+                            " (" +
+                            _vm._s(asset.asset) +
+                            ")\n                        "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(_vm._s(_vm._f("round")(asset.amount, 4)))
+                      ]),
+                      _vm._v(" "),
+                      _c("td"),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          _vm._s(_vm._f("currency")(asset.usdPrice, "USD"))
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(_vm._s(_vm._f("currency")(asset.gbpValue)))
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        [
+                          asset.gbpProfit !== null
+                            ? _c("Difference", {
+                                attrs: {
+                                  value: asset.gbpProfit,
+                                  "as-currency": true
+                                }
+                              })
+                            : _vm._e()
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        [
+                          asset.percentageProfit !== undefined
+                            ? _c("Difference", {
+                                attrs: {
+                                  value: asset.percentageProfit,
+                                  "as-percentage": true
+                                }
+                              })
+                            : _vm._e()
+                        ],
+                        1
+                      )
+                    ])
+                  }),
+                  0
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
           _vm.compareToSnapshot
             ? [
                 _vm.compareToSnapshotAssets
@@ -802,7 +924,30 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Coin")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Amount")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Avg. Cost")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Current Price")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Current Value")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("P/L (£)")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("P/L (%)")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 

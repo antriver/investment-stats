@@ -32,9 +32,52 @@
                         <button type="button"
                                 class="btn btn-default"
                                 :class="{'active':profitDisplay === 'fiat'}"
-                                @click.prevent="profitDisplay='fiat'"><i class="fas fa-pound-sign"></i></button>
+                                @click.prevent="profitDisplay='fiat'">
+                            <i class="fas fa-pound-sign"></i>
+                        </button>
                     </div>
                 </header>
+
+                <table v-if="latestSnapshotAssets"
+                       class="table assets-table">
+                    <thead>
+                        <tr>
+                            <th>Coin</th>
+                            <th>Amount</th>
+                            <th>Avg. Cost</th>
+                            <th>Current Price</th>
+                            <th>Current Value</th>
+                            <th>P/L (£)</th>
+                            <th>P/L (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="asset in latestSnapshotAssetsWithProfit"
+                            :key="asset.asset">
+                            <td>
+                                <img v-if="asset.logoUrl"
+                                     :src="asset.logoUrl"
+                                     :alt="asset.name"
+                                     class="asset-card__logo" />
+                                {{ asset.name }} ({{ asset.asset }})
+                            </td>
+                            <td>{{ asset.amount | round(4) }}</td>
+                            <td></td>
+                            <td>{{ asset.usdPrice | currency('USD') }}</td>
+                            <td>{{ asset.gbpValue | currency }}</td>
+                            <td>
+                                <Difference v-if="asset.gbpProfit !== null"
+                                            :value="asset.gbpProfit"
+                                            :as-currency="true"></Difference>
+                            </td>
+                            <td>
+                                <Difference v-if="asset.percentageProfit !== undefined"
+                                            :value="asset.percentageProfit"
+                                            :as-percentage="true"></Difference>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <template v-if="compareToSnapshot">
                     <div v-if="compareToSnapshotAssets"
@@ -79,14 +122,16 @@
 </template>
 
 <script>
-import axios from 'axios';
 import AssetCard from '@/frontend/js/components/AssetCard.vue';
-import { cloneDeep } from 'lodash';
+import axios from 'axios';
 import BigNumber from 'bignumber.js';
+import Difference from '@/frontend/js/components/Difference.vue';
+import { cloneDeep } from 'lodash';
 
 export default {
     components: {
         AssetCard,
+        Difference,
     },
 
     data() {
@@ -318,6 +363,20 @@ export default {
 .asset-grid {
     .asset-card {
         margin-bottom: 20px;
+    }
+}
+
+.assets-table.table {
+    background: #fff;
+
+    th,
+    td {
+        text-align: right !important;
+        vertical-align: middle !important;
+
+        &:first-child {
+            text-align: left !important;
+        }
     }
 }
 
