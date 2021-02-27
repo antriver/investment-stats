@@ -21,81 +21,28 @@
                     <h4 v-else-if="latestSnapshot">
                         {{ latestSnapshot.createdAt | relativeTime }}
                     </h4>
-
-                    <div class="btn-group no-shrink">
-                        <button type="button"
-                                class="btn btn-default"
-                                :class="{'active':profitDisplay === 'percent'}"
-                                @click.prevent="profitDisplay='percent'">
-                            <i class="fas fa-percent"></i>
-                        </button>
-                        <button type="button"
-                                class="btn btn-default"
-                                :class="{'active':profitDisplay === 'fiat'}"
-                                @click.prevent="profitDisplay='fiat'">
-                            <i class="fas fa-pound-sign"></i>
-                        </button>
-                    </div>
                 </header>
 
-                <table v-if="latestSnapshotAssets"
-                       class="table assets-table">
-                    <thead>
-                        <tr>
-                            <th>Coin</th>
-                            <th>Amount</th>
-                            <th>Avg. Cost</th>
-                            <th>Current Price</th>
-                            <th>Current Value</th>
-                            <th>P/L (£)</th>
-                            <th>P/L (%)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="asset in latestSnapshotAssetsWithProfit"
-                            :key="asset.asset">
-                            <td>
-                                <img v-if="asset.logoUrl"
-                                     :src="asset.logoUrl"
-                                     :alt="asset.name"
-                                     class="asset-card__logo" />
-                                {{ asset.name }} ({{ asset.asset }})
-                            </td>
-                            <td>{{ asset.amount | round(4) }}</td>
-                            <td></td>
-                            <td>{{ asset.usdPrice | currency('USD') }}</td>
-                            <td>{{ asset.gbpValue | currency }}</td>
-                            <td>
-                                <Difference v-if="asset.gbpProfit !== null"
-                                            :value="asset.gbpProfit"
-                                            :as-currency="true"></Difference>
-                            </td>
-                            <td>
-                                <Difference v-if="asset.percentageProfit !== undefined"
-                                            :value="asset.percentageProfit"
-                                            :as-percentage="true"></Difference>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <AssetsTable v-if="latestSnapshotAssets"
+                             :assets="latestSnapshotAssetsWithProfit"></AssetsTable>
 
-                <template v-if="compareToSnapshot">
-                    <div v-if="compareToSnapshotAssets"
-                         class="asset-grid">
-                        <AssetCard v-for="asset in comparedAssets"
-                                   :profit-display="profitDisplay"
-                                   :key="asset.id"
-                                   :asset="asset" />
-                    </div>
-                </template>
-                <template v-else-if="latestSnapshotAssets">
-                    <div class="asset-grid">
-                        <AssetCard v-for="asset in latestSnapshotAssetsWithProfit"
-                                   :profit-display="profitDisplay"
-                                   :key="asset.id"
-                                   :asset="asset" />
-                    </div>
-                </template>
+                <!--                <template v-if="compareToSnapshot">-->
+                <!--                    <div v-if="compareToSnapshotAssets"-->
+                <!--                         class="asset-grid">-->
+                <!--                        <AssetCard v-for="asset in comparedAssets"-->
+                <!--                                   :profit-display="profitDisplay"-->
+                <!--                                   :key="asset.id"-->
+                <!--                                   :asset="asset" />-->
+                <!--                    </div>-->
+                <!--                </template>-->
+                <!--                <template v-else-if="latestSnapshotAssets">-->
+                <!--                    <div class="asset-grid">-->
+                <!--                        <AssetCard v-for="asset in latestSnapshotAssetsWithProfit"-->
+                <!--                                   :profit-display="profitDisplay"-->
+                <!--                                   :key="asset.id"-->
+                <!--                                   :asset="asset" />-->
+                <!--                    </div>-->
+                <!--                </template>-->
             </div>
         </div>
 
@@ -123,15 +70,15 @@
 
 <script>
 import AssetCard from '@/frontend/js/components/AssetCard.vue';
+import AssetsTable from '@/frontend/js/components/AssetsTable.vue';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
-import Difference from '@/frontend/js/components/Difference.vue';
 import { cloneDeep } from 'lodash';
 
 export default {
     components: {
+        AssetsTable,
         AssetCard,
-        Difference,
     },
 
     data() {
@@ -165,11 +112,6 @@ export default {
              * @type {SnapshotAsset[]|null}
              */
             compareToSnapshotAssets: null,
-
-            /**
-             * @type {string}
-             */
-            profitDisplay: 'fiat',
 
             /**
              * @type {boolean}
@@ -259,14 +201,13 @@ export default {
         },
 
         latestSnapshotAssetsWithProfit() {
-            console.log('latestSnapshotAssetsWithProfit');
-
             /** @type {SnapshotAsset[]} */
             const currentAssets = cloneDeep(this.latestSnapshotAssets);
 
             currentAssets.forEach((a) => {
                 // Clear profit returned by API as this is going to be removed.
                 a.gbpProfit = null;
+                a.usdProfit = null;
 
                 /**
                  * @type {OwnedAsset}
@@ -277,23 +218,21 @@ export default {
                 }
 
                 const gbpProfit = (new BigNumber(a.gbpValue)).minus(oa.totalGbpPaid);
-
                 a.gbpProfit = gbpProfit
                     .decimalPlaces(2)
                     .toNumber();
 
+                const usdProfit = (new BigNumber(a.usdValue)).minus(oa.totalUsdPaid);
+                a.usdProfit = usdProfit
+                    .decimalPlaces(2)
+                    .toNumber();
+
                 // Calculate percentage profit.
-                a.percentageProfit = gbpProfit.dividedBy(oa.totalGbpPaid)
+                a.percentageProfit = usdProfit.dividedBy(oa.totalUsdPaid)
                     .multipliedBy(100)
                     .decimalPlaces(2)
                     .toNumber();
             });
-
-            if (this.profitDisplay === 'percent') {
-                this.sortByPercentageProfit(currentAssets);
-            } else if (this.profitDisplay === 'fiat') {
-                this.sortByGbpProfit(currentAssets);
-            }
 
             return currentAssets;
         },
@@ -363,20 +302,6 @@ export default {
 .asset-grid {
     .asset-card {
         margin-bottom: 20px;
-    }
-}
-
-.assets-table.table {
-    background: #fff;
-
-    th,
-    td {
-        text-align: right !important;
-        vertical-align: middle !important;
-
-        &:first-child {
-            text-align: left !important;
-        }
     }
 }
 

@@ -5,11 +5,11 @@ import { currency } from '@/frontend/js/filters/currency';
  * http://jsfiddle.net/bryan_k/3ova17y9/
  *
  * @param {string} value The value string.
- * @param {boolean} displayAsCurrency
+ * @param {?string} displayAsCurrency
  *
  * @return {string} value
  */
-export const profit = function (value, displayAsCurrency = false) {
+export const profit = function (value, displayAsCurrency = null) {
     let str = '';
 
     if (parseFloat(value) === 0) {
@@ -21,7 +21,7 @@ export const profit = function (value, displayAsCurrency = false) {
     }
 
     if (displayAsCurrency) {
-        str += currency(Math.abs(value));
+        str += currency(Math.abs(value), displayAsCurrency);
     } else {
         str += Math.abs(value);
     }

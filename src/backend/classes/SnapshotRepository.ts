@@ -34,10 +34,15 @@ export class SnapshotRepository {
                 `SELECT
                      sa.*,
                      a.name,
-                     a.logoUrl
+                     a.logoUrl,
+                     ca.totalUsdPaid,
+                     ca.averageUsdPaid,
+                     ca.totalGbpPaid,
+                     ca.averageGbpPaid
                  FROM
                      snapshot_assets sa
                      LEFT JOIN assets a ON a.asset = sa.asset
+                     LEFT JOIN current_assets ca on sa.asset = ca.asset
                  WHERE
                      sa.snapshotId = $1`,
             {

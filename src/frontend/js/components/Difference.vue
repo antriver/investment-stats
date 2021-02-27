@@ -15,8 +15,8 @@ export default Vue.extend({
             required: true,
         },
         asCurrency: {
-            type: Boolean,
-            default: false,
+            type: String,
+            default: null,
         },
         asPercentage: {
             type: Boolean,
