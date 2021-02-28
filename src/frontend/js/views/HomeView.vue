@@ -1,5 +1,9 @@
 <template>
     <div id="home">
+
+        <ProfitBar v-if="latestSnapshotAssetsWithProfit"
+                   :assets="latestSnapshotAssetsWithProfit" />
+
         <div class="left">
             <div class="assets container">
 
@@ -23,7 +27,7 @@
                     </h4>
                 </header>
 
-                <AssetsTable v-if="latestSnapshotAssets"
+                <AssetsTable v-if="latestSnapshotAssetsWithProfit"
                              :assets="latestSnapshotAssetsWithProfit"></AssetsTable>
 
                 <!--                <template v-if="compareToSnapshot">-->
@@ -46,24 +50,24 @@
             </div>
         </div>
 
-        <div class="right">
-            <h4>Compare To</h4>
-            <ul class="comparison-snapshots nav nav-pills nav-stacked">
-                <li :class="{active: !compareToSnapshot}">
-                    <a @click.prevent="setCompareToSnapshot(null)">None</a>
-                </li>
-                <li v-for="snapshot in availableSnapshots"
-                    v-if="!latestSnapshot || snapshot.id !== latestSnapshot.id"
-                    :key="snapshot.id"
-                    :class="{active: compareToSnapshot && snapshot.id === compareToSnapshot.id}">
-                    <a href="#"
-                       @click.prevent="setCompareToSnapshot(snapshot)">
-                        {{ snapshot.createdAt | relativeTime }}
-                        <small>{{ snapshot.createdAt | friendlyTime }}</small>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <!--        <div class="right">-->
+        <!--            <h4>Compare To</h4>-->
+        <!--            <ul class="comparison-snapshots nav nav-pills nav-stacked">-->
+        <!--                <li :class="{active: !compareToSnapshot}">-->
+        <!--                    <a @click.prevent="setCompareToSnapshot(null)">None</a>-->
+        <!--                </li>-->
+        <!--                <li v-for="snapshot in availableSnapshots"-->
+        <!--                    v-if="!latestSnapshot || snapshot.id !== latestSnapshot.id"-->
+        <!--                    :key="snapshot.id"-->
+        <!--                    :class="{active: compareToSnapshot && snapshot.id === compareToSnapshot.id}">-->
+        <!--                    <a href="#"-->
+        <!--                       @click.prevent="setCompareToSnapshot(snapshot)">-->
+        <!--                        {{ snapshot.createdAt | relativeTime }}-->
+        <!--                        <small>{{ snapshot.createdAt | friendlyTime }}</small>-->
+        <!--                    </a>-->
+        <!--                </li>-->
+        <!--            </ul>-->
+        <!--        </div>-->
 
     </div>
 </template>
@@ -74,9 +78,11 @@ import AssetsTable from '@/frontend/js/components/AssetsTable.vue';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { cloneDeep } from 'lodash';
+import ProfitBar from '@/frontend/js/components/ProfitBar';
 
 export default {
     components: {
+        ProfitBar,
         AssetsTable,
         AssetCard,
     },
@@ -201,6 +207,10 @@ export default {
         },
 
         latestSnapshotAssetsWithProfit() {
+            if (!this.latestSnapshotAssets) {
+                return [];
+            }
+
             /** @type {SnapshotAsset[]} */
             const currentAssets = cloneDeep(this.latestSnapshotAssets);
 
@@ -306,6 +316,8 @@ export default {
 }
 
 #home {
+    padding-bottom: 80px; // Height of profit bar.
+
     .header {
         display: flex;
         align-items: center;

@@ -248,6 +248,95 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/components/ProfitBar.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--1!./node_modules/vue-loader/lib??vue-loader-options!./src/frontend/js/components/ProfitBar.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! bignumber.js */ "./node_modules/bignumber.js/bignumber.js");
+/* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bignumber_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _frontend_js_components_Difference_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/frontend/js/components/Difference.vue */ "./src/frontend/js/components/Difference.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'ProfitBar',
+  components: {
+    Difference: _frontend_js_components_Difference_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  props: {
+    assets: {
+      type: Array,
+      required: true
+    }
+  },
+  computed: {
+    totalInvested: function totalInvested() {
+      return this.assets.reduce(function (total, asset) {
+        if (asset.totalUsdPaid !== null) {
+          return new bignumber_js__WEBPACK_IMPORTED_MODULE_0___default.a(total).plus(asset.totalUsdPaid).decimalPlaces(2).toNumber();
+        }
+
+        return total;
+      }, 0);
+    },
+    totalPl: function totalPl() {
+      return this.assets.reduce(function (total, asset) {
+        if (asset.usdProfit !== null) {
+          return new bignumber_js__WEBPACK_IMPORTED_MODULE_0___default.a(total).plus(asset.usdProfit).decimalPlaces(2).toNumber();
+        }
+
+        return total;
+      }, 0);
+    },
+    percentagePl: function percentagePl() {
+      return new bignumber_js__WEBPACK_IMPORTED_MODULE_0___default.a(this.totalPl).dividedBy(this.totalInvested).multipliedBy(100).decimalPlaces(2).toNumber();
+    },
+    totalValue: function totalValue() {
+      return this.assets.reduce(function (total, asset) {
+        if (asset.totalUsdPaid !== null) {
+          return new bignumber_js__WEBPACK_IMPORTED_MODULE_0___default.a(total).plus(asset.usdValue).decimalPlaces(2).toNumber();
+        }
+
+        return total;
+      }, 0);
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/views/HomeView.vue?vue&type=script&lang=js&":
 /*!***************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--1!./node_modules/vue-loader/lib??vue-loader-options!./src/frontend/js/views/HomeView.vue?vue&type=script&lang=js& ***!
@@ -265,6 +354,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bignumber_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bignumber_js__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _frontend_js_components_ProfitBar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/frontend/js/components/ProfitBar */ "./src/frontend/js/components/ProfitBar.vue");
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -339,6 +429,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+
 
 
 
@@ -346,6 +441,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
+    ProfitBar: _frontend_js_components_ProfitBar__WEBPACK_IMPORTED_MODULE_5__["default"],
     AssetsTable: _frontend_js_components_AssetsTable_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
     AssetCard: _frontend_js_components_AssetCard_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
@@ -472,7 +568,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     latestSnapshotAssetsWithProfit: function latestSnapshotAssetsWithProfit() {
       var _this3 = this;
 
+      if (!this.latestSnapshotAssets) {
+        return [];
+      }
       /** @type {SnapshotAsset[]} */
+
+
       var currentAssets = Object(lodash__WEBPACK_IMPORTED_MODULE_4__["cloneDeep"])(this.latestSnapshotAssets);
       currentAssets.forEach(function (a) {
         // Clear profit returned by API as this is going to be removed.
@@ -595,6 +696,24 @@ module.exports = exports;
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/lib??vue-loader-options!./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".profit-bar {\n  height: 80px;\n  display: flex;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  background: #ffffff;\n  box-shadow: rgba(0, 0, 0, 0.075) 0 2px 4px 0;\n  border-top: 1px solid #f1f3f5;\n}\n.profit-bar > div {\n  flex-grow: 1;\n  flex-shrink: 1;\n  flex-basis: 10%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  text-align: center;\n  font-size: 18px;\n}\n.profit-bar > div:not(:first-child) {\n  border-left: 1px solid #f1f3f5;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/views/HomeView.vue?vue&type=style&index=0&lang=less&":
 /*!**********************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/lib??vue-loader-options!./src/frontend/js/views/HomeView.vue?vue&type=style&index=0&lang=less& ***!
@@ -606,7 +725,7 @@ module.exports = exports;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "@media screen and (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (max-width: 767px) {\n}.asset-grid .asset-card {\n  margin-bottom: 20px;\n}\n#home .header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-bottom: 20px;\n}\n#home .header h4 {\n  flex-grow: 1;\n  margin: 0;\n  text-align: left;\n}\n#home .right {\n  padding: 20px;\n}\n#home .right .nav {\n  margin-top: 20px;\n}\n@media (min-width: 1200px) {\n.asset-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr 1fr;\n    grid-gap: 20px;\n}\n.asset-grid .asset-card {\n    margin: 0;\n}\n#home {\n    display: flex;\n    align-items: stretch;\n    min-height: 100vh;\n}\n#home .left {\n    flex-grow: 1;\n    flex-shrink: 1;\n}\n#home .right {\n    flex-grow: 0;\n    flex-shrink: 0;\n}\n.right {\n    min-width: 250px;\n    background: #fff;\n    padding: 20px;\n    overflow-y: auto;\n    border-left: 1px solid #f1f3f5;\n}\n}\n", ""]);
+exports.push([module.i, "@media screen and (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (min-width: 768px) {\n}@media (min-width: 768px) {\n}@media (max-width: 767px) {\n}@media (max-width: 767px) {\n}.asset-grid .asset-card {\n  margin-bottom: 20px;\n}\n#home {\n  padding-bottom: 80px;\n}\n#home .header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin-bottom: 20px;\n}\n#home .header h4 {\n  flex-grow: 1;\n  margin: 0;\n  text-align: left;\n}\n#home .right {\n  padding: 20px;\n}\n#home .right .nav {\n  margin-top: 20px;\n}\n@media (min-width: 1200px) {\n.asset-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr 1fr;\n    grid-gap: 20px;\n}\n.asset-grid .asset-card {\n    margin: 0;\n}\n#home {\n    display: flex;\n    align-items: stretch;\n    min-height: 100vh;\n}\n#home .left {\n    flex-grow: 1;\n    flex-shrink: 1;\n}\n#home .right {\n    flex-grow: 0;\n    flex-shrink: 0;\n}\n.right {\n    min-width: 250px;\n    background: #fff;\n    padding: 20px;\n    overflow-y: auto;\n    border-left: 1px solid #f1f3f5;\n}\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -893,6 +1012,76 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/components/ProfitBar.vue?vue&type=template&id=405f01b8&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/frontend/js/components/ProfitBar.vue?vue&type=template&id=405f01b8& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "profit-bar" }, [
+    _c("div", [
+      _c("span", [
+        _vm._v(
+          "\n            " +
+            _vm._s(_vm._f("currency")(_vm.totalInvested, "USD")) +
+            "\n            "
+        ),
+        _c("small", [_vm._v("Invested")])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c(
+        "span",
+        [
+          _c("Difference", {
+            attrs: { value: _vm.totalPl, "as-currency": "USD" }
+          }),
+          _vm._v(" "),
+          _c(
+            "small",
+            [
+              _vm._v("\n                Profit ("),
+              _c("Difference", {
+                attrs: { value: _vm.percentagePl, "as-percentage": true }
+              }),
+              _vm._v(")                      ")
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c("div", [
+      _c("span", [
+        _vm._v(
+          "\n            " +
+            _vm._s(_vm._f("currency")(_vm.totalValue, "USD")) +
+            "\n            "
+        ),
+        _c("small", [_vm._v("Total Value")])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/views/HomeView.vue?vue&type=template&id=77a87db2&":
 /*!*********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/frontend/js/views/HomeView.vue?vue&type=template&id=77a87db2& ***!
@@ -908,137 +1097,82 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "home" } }, [
-    _c("div", { staticClass: "left" }, [
-      _c(
-        "div",
-        { staticClass: "assets container" },
-        [
-          _c("header", { staticClass: "header" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-default mr-1",
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    return _vm.createSnapshot($event)
-                  }
-                }
-              },
-              [
-                _vm.snapshotInProgress
-                  ? _c("i", { staticClass: "fas fa-spinner fa-spin" })
-                  : _c("i", { staticClass: "fas fa-sync" })
-              ]
-            ),
-            _vm._v(" "),
-            _vm.compareToSnapshot
-              ? _c("h4", [
-                  _vm._v(
-                    "\n                    " +
-                      _vm._s(
-                        _vm._f("relativeTime")(_vm.latestSnapshot.createdAt)
-                      ) +
-                      "\n                    compared to\n                    " +
-                      _vm._s(
-                        _vm._f("relativeTime")(_vm.compareToSnapshot.createdAt)
-                      ) +
-                      "\n                "
-                  )
-                ])
-              : _vm.latestSnapshot
-              ? _c("h4", [
-                  _vm._v(
-                    "\n                    " +
-                      _vm._s(
-                        _vm._f("relativeTime")(_vm.latestSnapshot.createdAt)
-                      ) +
-                      "\n                "
-                  )
-                ])
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _vm.latestSnapshotAssets
-            ? _c("AssetsTable", {
-                attrs: { assets: _vm.latestSnapshotAssetsWithProfit }
-              })
-            : _vm._e()
-        ],
-        1
-      )
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "right" }, [
-      _c("h4", [_vm._v("Compare To")]),
-      _vm._v(" "),
-      _c(
-        "ul",
-        { staticClass: "comparison-snapshots nav nav-pills nav-stacked" },
-        [
-          _c("li", { class: { active: !_vm.compareToSnapshot } }, [
-            _c(
-              "a",
-              {
-                on: {
-                  click: function($event) {
-                    $event.preventDefault()
-                    return _vm.setCompareToSnapshot(null)
-                  }
-                }
-              },
-              [_vm._v("None")]
-            )
-          ]),
-          _vm._v(" "),
-          _vm._l(_vm.availableSnapshots, function(snapshot) {
-            return !_vm.latestSnapshot || snapshot.id !== _vm.latestSnapshot.id
-              ? _c(
-                  "li",
-                  {
-                    key: snapshot.id,
-                    class: {
-                      active:
-                        _vm.compareToSnapshot &&
-                        snapshot.id === _vm.compareToSnapshot.id
-                    }
-                  },
-                  [
-                    _c(
-                      "a",
-                      {
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.setCompareToSnapshot(snapshot)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                    " +
-                            _vm._s(_vm._f("relativeTime")(snapshot.createdAt)) +
-                            "\n                    "
-                        ),
-                        _c("small", [
-                          _vm._v(
-                            _vm._s(_vm._f("friendlyTime")(snapshot.createdAt))
-                          )
-                        ])
-                      ]
-                    )
-                  ]
-                )
-              : _vm._e()
+  return _c(
+    "div",
+    { attrs: { id: "home" } },
+    [
+      _vm.latestSnapshotAssetsWithProfit
+        ? _c("ProfitBar", {
+            attrs: { assets: _vm.latestSnapshotAssetsWithProfit }
           })
-        ],
-        2
-      )
-    ])
-  ])
+        : _vm._e(),
+      _vm._v(" "),
+      _c("div", { staticClass: "left" }, [
+        _c(
+          "div",
+          { staticClass: "assets container" },
+          [
+            _c("header", { staticClass: "header" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-default mr-1",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.createSnapshot($event)
+                    }
+                  }
+                },
+                [
+                  _vm.snapshotInProgress
+                    ? _c("i", { staticClass: "fas fa-spinner fa-spin" })
+                    : _c("i", { staticClass: "fas fa-sync" })
+                ]
+              ),
+              _vm._v(" "),
+              _vm.compareToSnapshot
+                ? _c("h4", [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(
+                          _vm._f("relativeTime")(_vm.latestSnapshot.createdAt)
+                        ) +
+                        "\n                    compared to\n                    " +
+                        _vm._s(
+                          _vm._f("relativeTime")(
+                            _vm.compareToSnapshot.createdAt
+                          )
+                        ) +
+                        "\n                "
+                    )
+                  ])
+                : _vm.latestSnapshot
+                ? _c("h4", [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(
+                          _vm._f("relativeTime")(_vm.latestSnapshot.createdAt)
+                        ) +
+                        "\n                "
+                    )
+                  ])
+                : _vm._e()
+            ]),
+            _vm._v(" "),
+            _vm.latestSnapshotAssetsWithProfit
+              ? _c("AssetsTable", {
+                  attrs: { assets: _vm.latestSnapshotAssetsWithProfit }
+                })
+              : _vm._e()
+          ],
+          1
+        )
+      ])
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -1084,6 +1218,27 @@ if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
 var add = __webpack_require__(/*! ../../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
 var update = add("7b0a67fc", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/lib??vue-loader-options!./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/less-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib??vue-loader-options!./ProfitBar.vue?vue&type=style&index=0&lang=less& */ "./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less&");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! ../../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("67242782", content, false, {});
 // Hot Module Replacement
 if(false) {}
 
@@ -1348,6 +1503,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Difference_vue_vue_type_template_id_605ae004___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Difference_vue_vue_type_template_id_605ae004___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./src/frontend/js/components/ProfitBar.vue":
+/*!**************************************************!*\
+  !*** ./src/frontend/js/components/ProfitBar.vue ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ProfitBar_vue_vue_type_template_id_405f01b8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ProfitBar.vue?vue&type=template&id=405f01b8& */ "./src/frontend/js/components/ProfitBar.vue?vue&type=template&id=405f01b8&");
+/* harmony import */ var _ProfitBar_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ProfitBar.vue?vue&type=script&lang=js& */ "./src/frontend/js/components/ProfitBar.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ProfitBar_vue_vue_type_style_index_0_lang_less___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ProfitBar.vue?vue&type=style&index=0&lang=less& */ "./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ProfitBar_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ProfitBar_vue_vue_type_template_id_405f01b8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ProfitBar_vue_vue_type_template_id_405f01b8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "src/frontend/js/components/ProfitBar.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./src/frontend/js/components/ProfitBar.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./src/frontend/js/components/ProfitBar.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_1_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--1!../../../../node_modules/vue-loader/lib??vue-loader-options!./ProfitBar.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/components/ProfitBar.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_1_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less&":
+/*!************************************************************************************!*\
+  !*** ./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less& ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_style_index_0_lang_less___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-style-loader!../../../../node_modules/css-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/less-loader/dist/cjs.js!../../../../node_modules/vue-loader/lib??vue-loader-options!./ProfitBar.vue?vue&type=style&index=0&lang=less& */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/less-loader/dist/cjs.js!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/components/ProfitBar.vue?vue&type=style&index=0&lang=less&");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_style_index_0_lang_less___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_style_index_0_lang_less___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_style_index_0_lang_less___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_less_loader_dist_cjs_js_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_style_index_0_lang_less___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
+
+/***/ }),
+
+/***/ "./src/frontend/js/components/ProfitBar.vue?vue&type=template&id=405f01b8&":
+/*!*********************************************************************************!*\
+  !*** ./src/frontend/js/components/ProfitBar.vue?vue&type=template&id=405f01b8& ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_template_id_405f01b8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ProfitBar.vue?vue&type=template&id=405f01b8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/frontend/js/components/ProfitBar.vue?vue&type=template&id=405f01b8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_template_id_405f01b8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ProfitBar_vue_vue_type_template_id_405f01b8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
