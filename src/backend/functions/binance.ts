@@ -34,7 +34,7 @@ export const getPrice = (
     flattenedTickers: FlattenedTickerPrices,
     fromAsset: string,
     toAsset: string,
-    allowVia = true
+    allowVia = true,
 ): BigNumber|null => {
     if (fromAsset === toAsset) {
         return new BigNumber(1);
@@ -52,12 +52,15 @@ export const getPrice = (
         return (new BigNumber(1)).dividedBy(flattenedTickers[reverseSymbol]);
     }
 
+    if (!allowVia) {
+        return null;
+    }
 
-    let tryVia = [
+    const tryVia = [
         'BUSD',
         'USDT',
         'BTC',
-        'ETH'
+        'ETH',
     ];
 
     for (let i = 0; i < tryVia.length; i++) {
@@ -76,11 +79,12 @@ export const convertValue = (
     fromAsset: string,
     toAsset: string,
     amount: BigNumber,
-): BigNumber => {
+): BigNumber|null => {
     const rate = getPrice(flattenedTickers, fromAsset, toAsset);
 
     if (rate === null) {
-        throw new Error(`No direct conversion rate available for ${fromAsset} -> ${toAsset}`);
+        console.error(`No direct conversion rate available for ${fromAsset} -> ${toAsset}`);
+        return null;
     }
 
     return amount.multipliedBy(rate);
@@ -95,13 +99,23 @@ export const addPricesToBalances = (balances: Balance[], tickers: FlattenedTicke
         const asset = balance.asset;
         const total = (new BigNumber(balance.total));
 
-        balance.prices.BTC = getPrice(tickers, asset, 'BTC').decimalPlaces(8).toString();
-        balance.prices.BUSD = getPrice(tickers, asset, 'BUSD').decimalPlaces(4).toString();
-        balance.prices.GBP = getPrice(tickers, asset, 'GBP').decimalPlaces(4).toString();
+        const btcPrice = getPrice(tickers, asset, 'BTC');
+        balance.prices.BTC = btcPrice ? btcPrice.decimalPlaces(8).toString() : null;
 
-        balance.values.BTC = convertValue(tickers, asset, 'BTC', total).decimalPlaces(8).toString();
-        balance.values.BUSD = convertValue(tickers, asset, 'BUSD', total).decimalPlaces(4).toString();
-        balance.values.GBP = convertValue(tickers, asset, 'GBP', total).decimalPlaces(8).toString();
+        const busdPrice = getPrice(tickers, asset, 'BUSD');
+        balance.prices.BUSD = busdPrice ? busdPrice.decimalPlaces(4).toString() : null;
+
+        const gbpPrice = getPrice(tickers, asset, 'GBP');
+        balance.prices.GBP = gbpPrice ? gbpPrice.decimalPlaces(4).toString() : null;
+
+        const btcValue = convertValue(tickers, asset, 'BTC', total);
+        balance.values.BTC = btcValue ? btcValue.decimalPlaces(8).toString() : null;
+
+        const busdValue = convertValue(tickers, asset, 'BUSD', total);
+        balance.values.BUSD = busdValue ? busdValue.decimalPlaces(4).toString() : null;
+
+        const gbpValue = convertValue(tickers, asset, 'GBP', total);
+        balance.values.GBP = gbpValue ? gbpValue.decimalPlaces(8).toString() : null;
     });
 };
 
@@ -109,11 +123,11 @@ export const zeroBalanceFilter = (balance: Balance): boolean => {
     return parseFloat((balance.total as string)) > 0;
 };
 
-//export const addFiatValueToBalance = (balance: Balance, fiat: string, tickers: FlattenedTickerPrices) => {
+// export const addFiatValueToBalance = (balance: Balance, fiat: string, tickers: FlattenedTickerPrices) => {
 //    balance.values[fiat] = {
 //        total: convertValue(tickers, 'BTC', fiat, new BigNumber(balance.values.BTC.total)).decimalPlaces(8).toString(),
 //    };
-//};
+// };
 
 /**
  * Convert the balances as they come from Binances (separate locked and free) into a single total.
@@ -131,7 +145,7 @@ export const createBalances = (balances: AssetBalance[]) => {
             asset: balance.asset,
             total: free.plus(locked).decimalPlaces(8).toString(),
             prices: {},
-            values: {}
+            values: {},
         };
     });
 };
