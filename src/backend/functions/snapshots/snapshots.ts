@@ -15,7 +15,7 @@ export const createSnapshot = async (sequelize: Sequelize): Promise<number> => {
 
     // Save stock prices
     // @ts-ignore
-    await saveStocksSnapshot(snapshotId, sequelize);
+    // await saveStocksSnapshot(snapshotId, sequelize);
 
     // Save info for any new crypto that might have appeared.
     const assetRepository = new AssetRepository(sequelize);
