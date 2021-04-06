@@ -5,6 +5,7 @@ import { SnapshotRepository } from '../classes/SnapshotRepository';
 import { OwnedAsset } from '../models/OwnedAsset';
 import { createSnapshot } from '../functions/snapshots/snapshots';
 import { getBinanceBalances } from '../functions/snapshots/binance';
+import BigNumber from 'bignumber.js';
 
 export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> => {
     console.log('Initializing API...');
@@ -16,7 +17,7 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
         const assets = await assetRepository.getCurrentAssets();
 
         // Return them indexed by asset.
-        const results: {[key: string]: OwnedAsset} = {};
+        const results: { [key: string]: OwnedAsset } = {};
 
         assets.forEach((asset) => {
             results[asset.asset] = asset;
@@ -78,14 +79,27 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
             return a.asset > b.asset ? 1 : -1;
         });
 
+        let usdTotal = new BigNumber(0);
+        let gbpTotal = new BigNumber(0);
+
         const csv = balances.map((bal) => {
+            usdTotal = usdTotal.plus(bal.values.BUSD);
+            gbpTotal = gbpTotal.plus(bal.values.GBP);
+
             return [
                 bal.asset,
                 bal.total,
-                bal.prices.BUSD,
-                bal.prices.GBP,
+                bal.values.BUSD,
+                bal.values.GBP,
             ];
         });
+
+        csv.unshift([
+            'Total',
+            '',
+            usdTotal.toString(),
+            gbpTotal.toString(),
+        ]);
 
         const str = csv.join('\n');
 
