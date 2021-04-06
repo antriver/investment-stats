@@ -4,6 +4,7 @@ import { AssetRepository } from '../classes/AssetRepository';
 import { SnapshotRepository } from '../classes/SnapshotRepository';
 import { OwnedAsset } from '../models/OwnedAsset';
 import { createSnapshot } from '../functions/snapshots/snapshots';
+import { getBinanceBalances } from '../functions/snapshots/binance';
 
 export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> => {
     console.log('Initializing API...');
@@ -58,5 +59,36 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
         const snapshotId = await createSnapshot(db);
 
         res.json({ snapshotId });
+    });
+
+    expressApp.get('/api/binance-balances', async (req, res) => {
+        const balances = await getBinanceBalances();
+
+        res.json(balances);
+    });
+
+    expressApp.get('/api/binance-balances.csv', async (req, res) => {
+        let balances = await getBinanceBalances();
+
+        balances = balances.sort((a, b) => {
+            if (a.asset === b.asset) {
+                return 0;
+            }
+
+            return a.asset > b.asset ? 1 : -1;
+        });
+
+        const csv = balances.map((bal) => {
+            return [
+                bal.asset,
+                bal.total,
+                bal.prices.BUSD,
+                bal.prices.GBP,
+            ];
+        });
+
+        const str = csv.join('\n');
+
+        res.send(str);
     });
 };

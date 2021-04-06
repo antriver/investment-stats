@@ -16,7 +16,7 @@ const createBinance = () => {
     });
 };
 
-export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequelize) => {
+export const getBinanceBalances = async () => {
     const binance = createBinance();
 
     const accountInfo = await binance.accountInfo();
@@ -36,6 +36,12 @@ export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequeli
     addPricesToBalances(balances, flattenedTickers);
 
     console.log('balances', JSON.stringify(balances, null, 4));
+
+    return balances;
+};
+
+export const saveBinanceSnapshot = async (snapshotId: number, sequelize: Sequelize) => {
+    const balances = await getBinanceBalances();
 
     for (let i = 0; i < balances.length; i++) {
         const balance = balances[i];
