@@ -13,15 +13,18 @@ describe('CoinMarketCap', () => {
             return cmc.getSymbols(['SAFEMOON', 'HOGE'])
                 .then((res) => {
                     console.log(res);
+                    expect(res.SAFEMOON.name).toBe('SafeMoon');
+                    expect(res.SAFEMOON.category).toBe('token');
                 });
         });
     });
 
-    fdescribe('getPrices', () => {
+    describe('getPrices', () => {
         it('Should return multiple prices', () => {
             return cmc.getPrices(['SAFEMOON', 'HOGE'])
                 .then((res) => {
                     console.log(res);
+                    expect(res.SAFEMOON.USD).toBeGreaterThan(0);
                 });
         });
     });

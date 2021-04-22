@@ -1,5 +1,3 @@
-import { AssetInterface } from '../models/AssetInterface';
-
 const CoinMarketCapClient = require('coinmarketcap-api');
 
 export class CoinMarketCap {
@@ -9,22 +7,11 @@ export class CoinMarketCap {
         this.client = new CoinMarketCapClient(process.env.COINMARKETCAP_KEY);
     }
 
-    getSymbol(symbol: string): Promise<any> {
-        return this.client.getMetadata({ symbol: [symbol] })
-            .then((response: any): { [key: string]: AssetInterface } => {
-                if (!response.hasOwnProperty('data')) {
-                    return null;
-                }
-
-                return response.data[symbol];
-            });
-    }
-
-    getSymbols(symbols: string[]): Promise<any[]> {
+    getSymbols(symbols: string[]): Promise<any> {
         return this.client.getMetadata({ symbol: symbols })
-            .then((response: any): AssetInterface[] => {
+            .then((response: any): any => {
                 if (!response.hasOwnProperty('data')) {
-                    return [];
+                    return {};
                 }
 
                 return response.data;
@@ -33,12 +20,21 @@ export class CoinMarketCap {
 
     getPrices(symbols: string[]): Promise<any> {
         return this.client.getQuotes({ symbol: symbols })
-            .then((response: any): AssetInterface[] => {
+            .then((response: any): any => {
                 if (!response.hasOwnProperty('data')) {
                     return [];
                 }
 
-                return response.data;
+                const quotes: any = {};
+
+                Object.keys(response.data).forEach((coin) => {
+                    quotes[coin] = {};
+                    Object.keys(response.data[coin].quote).forEach((fiat) => {
+                        quotes[coin][fiat] = response.data[coin].quote[fiat].price;
+                    });
+                });
+
+                return quotes;
             });
     }
 }
