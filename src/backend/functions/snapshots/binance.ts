@@ -7,7 +7,6 @@ import {
     mergeBalances,
     zeroBalanceFilter,
 } from '../binance';
-import BigNumber from 'bignumber.js';
 
 const createBinance = () => {
     return Binance({
