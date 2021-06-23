@@ -83,8 +83,8 @@ export const runApi = async (expressApp: Express, db: Sequelize): Promise<void> 
         let gbpTotal = new BigNumber(0);
 
         const csv = balances.map((bal) => {
-            usdTotal = usdTotal.plus(bal.values.BUSD);
-            gbpTotal = gbpTotal.plus(bal.values.GBP);
+            usdTotal = usdTotal.plus(bal.values.BUSD || 0);
+            gbpTotal = gbpTotal.plus(bal.values.GBP || 0);
 
             return [
                 bal.asset,

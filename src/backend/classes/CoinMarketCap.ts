@@ -18,6 +18,11 @@ export class CoinMarketCap {
             });
     }
 
+    getSymbol(symbol: string): Promise<any> {
+        return this.getSymbols([symbol])
+            .then((res) => res[symbol]);
+    }
+
     getPrices(symbols: string[]): Promise<any> {
         return this.client.getQuotes({ symbol: symbols })
             .then((response: any): any => {
